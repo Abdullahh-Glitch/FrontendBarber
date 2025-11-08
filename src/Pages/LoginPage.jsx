@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function LoginPage({setAuth}) {
+export default function LoginPage({setAuth, setRole}) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const Navigate = useNavigate();
@@ -11,8 +11,9 @@ export default function LoginPage({setAuth}) {
     // demo behaviour — replace with real auth call
     if (username === "admin" && password === "password123") {
         setAuth(true);
+        setRole("manager");
       console.log("Welcome");
-      Navigate("/attendance")
+      Navigate("/manager")
       
       
     } else {

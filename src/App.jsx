@@ -1,11 +1,12 @@
+import React , {useState} from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginPage from "./Pages/LoginPage";
 import SalesPage from "./Pages/SalesPage";
 import ManagerPage from "./Pages/ManagerPage";
-import OwnerPage from "./Pages/OwnerPage";
+import { PrivateRoute } from "./Components/PrivateRoutes";
 import UnauthorizedPage from "./Pages/UnauthorizedPage";
 
-export function App() {
+export default function App() {
   const [auth, setAuth] = useState(false);
   const [role, setRole] = useState("");
 
@@ -26,14 +27,6 @@ export function App() {
           element={
             <PrivateRoute auth={auth} role={role} allowedRoles={['manager']}>
               <ManagerPage />
-            </PrivateRoute>
-          } 
-        />
-        <Route 
-          path="/owner" 
-          element={
-            <PrivateRoute auth={auth} role={role} allowedRoles={['owner']}>
-              <OwnerPage />
             </PrivateRoute>
           } 
         />
