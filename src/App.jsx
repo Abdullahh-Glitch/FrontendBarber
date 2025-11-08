@@ -1,22 +1,44 @@
-import React from "react";
-import Navbar from "./Components/Navbar";
-import AttendancePage from "./Pages/AttendancePage";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import LoginPage from "./Pages/LoginPage";
+import SalesPage from "./Pages/SalesPage";
+import ManagerPage from "./Pages/ManagerPage";
+import OwnerPage from "./Pages/OwnerPage";
+import UnauthorizedPage from "./Pages/UnauthorizedPage";
 
-function App() {
+export function App() {
+  const [auth, setAuth] = useState(false);
+  const [role, setRole] = useState("");
+
   return (
-    <>
-      {/* bg-[#E7E3F6] */}
-      {/* bg-[#f0bdb1] */}
-      <div className="min-h-[100vh] w-full bg-gradient-to-r from-slate-900 to-slate-700">
-        <div className="min-h-[11vh] w-[100%] bg-gradient-to-r from-stone-500 to-stone-700">
-          <Navbar />
-        </div>
-        <div className="min-h-[85vh] w-full overflow-auto ">
-          <AttendancePage />
-        </div>
-      </div>
-    </>
+    <Router>
+      <Routes>
+        <Route path="/login" element={<LoginPage setAuth={setAuth} setRole={setRole} />} />
+        <Route 
+          path="/sales" 
+          element={
+            <PrivateRoute auth={auth} role={role} allowedRoles={['salesman']}>
+              <SalesPage />
+            </PrivateRoute>
+          } 
+        />
+        <Route 
+          path="/manager" 
+          element={
+            <PrivateRoute auth={auth} role={role} allowedRoles={['manager']}>
+              <ManagerPage />
+            </PrivateRoute>
+          } 
+        />
+        <Route 
+          path="/owner" 
+          element={
+            <PrivateRoute auth={auth} role={role} allowedRoles={['owner']}>
+              <OwnerPage />
+            </PrivateRoute>
+          } 
+        />
+        <Route path="/unauthorized" element={<UnauthorizedPage />} />
+      </Routes>
+    </Router>
   );
 }
-
-export default App;
