@@ -1,34 +1,36 @@
 import React, { useState } from "react";
 import { Await, useNavigate } from "react-router-dom";
-import { isAuth, getInfo } from "../Apis/authApi";
+import { useIsAuth } from "../Hooks/useLogin";
+import { useDispatch } from "react-redux";
+import { setAuth,noAuth } from "../Features/authSlice";
 
-export default function LoginPage({ setAuth, setRole }) {
+export default function LoginPage() {
   const [username, setUsername] = useState("ab007");
   const [password, setPassword] = useState("@@))&");
+  const[label, setLabel] = useState("");
   const [error, setError] = useState("");
   const Navigate = useNavigate();
-
+  const dispatch = useDispatch();
+  const { mutateAsync: login , isPending : loginIsPending} = useIsAuth();
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
-      const confirmation = await isAuth(username, password);
+      const confirmation = await login({ username :username, password: password });
+      
 
       if (confirmation.success) {
-        setAuth(true);
-
-        const info = await getInfo();
-        console.log(info);
-        console.log(info.role);
-
-        setRole(info.role);
-
-        if (info.role == 1) {
+        console.log(confirmation.role);
+          dispatch(setAuth({role: confirmation.role, user: username}));
+          setLabel("");     
+        if (confirmation.role == 1) {
           Navigate("/manager");
         }
       } else {
-        console.log("Login failed:");
+        dispatch(noAuth());
+        setLabel("Login failed"); 
       }
     } catch (err) {
       const message = err.response?.data?.message || "Login failed";
@@ -53,6 +55,7 @@ export default function LoginPage({ setAuth, setRole }) {
           </label>
           <input
             type="text"
+            name = "username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             placeholder="Enter your username"
@@ -73,14 +76,17 @@ export default function LoginPage({ setAuth, setRole }) {
             className="w-full px-4 py-2 rounded-lg border border-gray-200 shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
             required
           />
+          <label htmlFor="" className="text-red-500 ml-[40%]">{label !== "" && label}</label>
         </div>
 
         <button
           type="submit"
+          disabled={loginIsPending}
           className="w-full py-2 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-400 text-white font-semibold shadow-md hover:opacity-95 transition-colors"
         >
-          Login
+          { loginIsPending ? "Logging in..." : "Login" }
         </button>
+        
       </form>
     </div>
   );

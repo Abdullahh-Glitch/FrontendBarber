@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
+import { useSelector, useDispatch } from "react-redux";
 import { PostProductCategory } from '../Hooks/useProducts';
+import { closeProductCategoryModal } from '../Features/productSlice';
 
 
-function CategoryModal({ open, onClose, initialCategory }) {
-  const [category, setCategory] = useState(initialCategory || '');
+function CategoryModal() {
+  const dispatch = useDispatch();
+  const [category, setCategory] = useState('');
   const [error, setError] = useState('');
   const {mutateAsync : postProductCategory,isPending:isCategoryPending} = PostProductCategory();
+  const open = useSelector((state) => state.products.isProductCategoryModal)
+
+  const onClose = ()=>{
+    dispatch(closeProductCategoryModal());
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();

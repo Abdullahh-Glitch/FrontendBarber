@@ -1,13 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { X, Plus } from "lucide-react";
 import { PostProducts, UpdateProducts } from "../Hooks/useProducts";
+import { useSelector, useDispatch } from "react-redux";
+import { closeProductModal,openProductCategoryModal} from "../Features/productSlice";
 import CategoryModel from "../Components/CategoryModal";
+import { validateForm } from "../Handlers/productHandler";
 
-const ProductModal = ({ product, categories, setEdit, isEdit, onClose }) => {
+const ProductModal = ({ categories }) => {
+  const dispatch = useDispatch();
   const { mutateAsync: saveProduct, isPending: isSavePending } = PostProducts();
-  const { mutateAsync: EditProducts, isPending: isEditPending } =
-    UpdateProducts();
-  const [categoryModel, setCategoryModel] = useState(false);
+  const { mutateAsync: EditProducts, isPending: isEditPending } = UpdateProducts();
+
+
+  const product = useSelector((state) => state.products.selectedProduct);
+  const isEdit = (product !== null);
+  const openCategoryModel = useSelector((state) => state.products.isProductCategoryModal);
+  
+  const handleOpenCategoryModal = ()=>{
+    dispatch(openProductCategoryModal());
+  }
+  
+  const onClose = () => {
+    dispatch(closeProductModal());
+  }
 
   const [formData, setFormData] = useState({
     name: "",
@@ -53,30 +68,12 @@ const ProductModal = ({ product, categories, setEdit, isEdit, onClose }) => {
     }
   }, [product]);
 
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!formData.categoryId) newErrors.categoryId = "Category is required";
-    if (!formData.name.trim()) newErrors.name = "Name is required";
-    if (!formData.sku.trim()) newErrors.sku = "SKU is required";
-    if (!formData.unit.trim()) newErrors.unit = "Unit is required";
-    if (formData.usesPerUnit < 0)
-      newErrors.currentStock = "Uses cannot be negative";
-    if (formData.currentStock < 0)
-      newErrors.currentStock = "Current stock cannot be negative";
-    if (formData.minStock < 0)
-      newErrors.minStock = "Minimum stock cannot be negative";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validateForm()) return;
+    if (!validateForm(formData,setErrors)) return;
 
-    if (!isEdit) {
+    if (!product) {
       try {
         await saveProduct(formData);
         clearForm();
@@ -85,11 +82,10 @@ const ProductModal = ({ product, categories, setEdit, isEdit, onClose }) => {
       }
     }
 
-    if (isEdit) {
+    if (product) {
       try {
         await EditProducts({ productId: id, product: formData });
         clearForm();
-        setEdit(false);
       } catch (error) {
         console.error("Error saving product:", error);
       }
@@ -171,18 +167,13 @@ const ProductModal = ({ product, categories, setEdit, isEdit, onClose }) => {
               </select>
               <button
                 type="button"
-                onClick={() => setCategoryModel(true)}
+                onClick={handleOpenCategoryModal}
                 className="px-3 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 flex items-center gap-1"
               >
                 <Plus className="h-4 w-4" />
                 Add
               </button>
-              {categoryModel && (
-                <CategoryModel
-                  open={CategoryModel}
-                  onClose={() => setCategoryModel(false)}
-                />
-              )}
+              {openCategoryModel && ( <CategoryModel/> )}
             </div>
             {errors.categoryId && (
               <p className="text-destructive text-sm mt-1">

@@ -1,28 +1,41 @@
-import React, { useState } from "react";
-import { Plus, Search, Filter, Package } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Plus, Search, Filter} from "lucide-react";
 import { GetProducts,GetProductCategories } from "../Hooks/useProducts";
+import { useSelector, useDispatch } from "react-redux";
+import { openProductModal } from "../Features/productSlice";
 import ProductTable from "../Components/ProductTable";
 import ProductModal from "../Components/ProductModal";
 
 export default function ProductPage() {
+  const dispatch = useDispatch();
 
-  const[productModel,setProductModel] =useState(false);
-  const[edit,setEdit] = useState(false);
-  const[selectedProduct,setSelectedProduct] = useState({});
+  const{ data: productData, isLoading: productIsLoading, isError: productIsError, error: productError} =GetProducts();
+  const { data: categories, isLoading: categoriesLoading, isError: categoriesIsError, error: categoriesError} = GetProductCategories();
 
-  const{ 
-    data: products,
-    isLoading: productIsLoading, 
-    isError: productIsError, 
-    error: productError
-  } =GetProducts();
 
-  const { 
-  data: categories, 
-  isLoading: categoriesLoading, 
-  isError: categoriesIsError, 
-  error: categoriesError 
-} = GetProductCategories();
+  const [searchTerm, setSearchTerm] = useState("");
+  const productModelState = useSelector((state) => state.products.isProductModal);
+  const [filteredProducts, setFilteredProducts] = useState(productData || []);
+
+  useEffect(() => {
+  setFilteredProducts(productData || []);
+}, [productData]);
+
+  const handdleSearch=(e)=>{
+    const term = e.target.value;
+    setSearchTerm(term);
+
+    const results = (productData || []).filter((product) => {
+    const name = product?.name?.toLowerCase() || "";
+    return name.startsWith(term.toLowerCase().trim());
+  });
+
+  setFilteredProducts(results);
+  }
+
+const handdleOpenNewProductModal=()=>{
+  dispatch(openProductModal());
+}
 
 
 
@@ -43,7 +56,7 @@ export default function ProductPage() {
         </div>
       </div>
       {/* main */}
-      <div>{productModel && (<ProductModal categories={categories} product={selectedProduct}setEdit={setEdit} onClose={() => {setProductModel(false);setSelectedProduct({})}} isEdit={edit} />)}</div>
+      <div>{productModelState && (<ProductModal categories={categories}/>)}</div>
       <div className="h-[70%] w-full flex justify-center ">
         <div className="w-[90%] h-[100%] flex flex-col">
 
@@ -53,9 +66,9 @@ export default function ProductPage() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
               <input
                 type="text"
-                placeholder="Search products by name, brand, or barcode..."
-                // value={searchTerm}
-                // onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search products by name..."
+                value={searchTerm}
+                onChange={handdleSearch}
                 className="w-[100%] pl-12 pr-4 py-3 border border-border rounded-xl bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary shadow-sm transition-all duration-200"
               />
             </div>
@@ -68,7 +81,7 @@ export default function ProductPage() {
               </button>
 
               <button
-                onClick={()=>{setProductModel(true); setEdit(false);setSelectedProduct({})}}
+                onClick={handdleOpenNewProductModal}
                 className="px-6 py-3 bg-gradient-primary border text-primary-foreground rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center gap-2 font-medium"
               >
                 <Plus className="h-4 w-4" />
@@ -79,7 +92,7 @@ export default function ProductPage() {
 
           </div>
           <div className="mt-4 h-[70%] overflow-auto">
-            <ProductTable products={products} categories={categories} productModel={setProductModel} isEdit={setEdit} setSelectedProduct={setSelectedProduct} onDelete={()=>console.log("Deleted")}/>
+            <ProductTable products={filteredProducts} categories={categories} onDelete={()=>console.log("Deleted")}/>
           </div>
         </div>
       </div>

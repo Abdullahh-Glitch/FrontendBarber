@@ -1,16 +1,18 @@
 import React from 'react';
 import { Edit, Trash2 } from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import { openProductModal, setSelectedProduct } from '../Features/productSlice';
 
-const ProductTable = ({ products, categories, productModel,setSelectedProduct, isEdit, onDelete }) => {
+const ProductTable = ({ products, categories, onDelete }) => {
+  const dispatch = useDispatch();
   const getCategoryName = (categoryId) => {
     const category = categories.find(c => c.id === categoryId);
     return category?.name || 'Unknown Category';
   };
 
   const onEdit = (product)=>{
-    isEdit(true);
-    productModel(true);
-    setSelectedProduct(product);
+    dispatch(openProductModal());
+    dispatch(setSelectedProduct(product))
   }
 
   if (products.length === 0) {
