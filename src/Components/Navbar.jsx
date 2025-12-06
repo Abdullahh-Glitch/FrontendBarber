@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-export default function Navbar({ btns }) {
+export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const btns = useSelector((state) => state.navbar.managerbtn);
 
   return (
     <nav className="w-full bg-black text-white sticky top-0 z-50 shadow-lg">

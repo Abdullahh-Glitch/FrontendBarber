@@ -32,10 +32,10 @@ const ProductTable = ({ products, categories }) => {
   }
 
   return (
-    <div className="bg-gradient-card rounded-2xl border border-border overflow-x-hidden shadow-lg">
-      <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-green-500 scrollbar-track-red-200">
-        <table className="w-full">
-          <thead className="bg-white/20 backdrop-blur-sm border-b">
+    <div className="bg-gradient-card w-full h-[98%] rounded-2xl shadow-lg">
+      <div className="overflow-auto thin-scrollbar rounded-b-2xl h-full">
+        <table className="w-full border border-border rounded-2xl">
+          <thead className="bg-white/40 backdrop-blur-sm sticky top-0 z-10">
             <tr >
               <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Sr
@@ -63,34 +63,33 @@ const ProductTable = ({ products, categories }) => {
               </th>
             </tr>
           </thead>
-          <tbody className="bg-card/50 divide-y divide-border">
+          <tbody className="bg-black divide-y divide-border border border-border">
             {products.map((product, index) => (
-              <tr key={index} className={`hover:bg-gray-700 transition-colors duration-100 ${index % 2 === 0 ? 'bg-black/40' : 'bg-black/30'} h-[10px] hover:scale-101`}>
-                <td className="px-4 py-4 whitespace-nowrap">
+              <tr key={index} className={`hover:bg-gray-700 transition-colors border border-red-600 border-border  duration-100 ${index % 2 === 0 ? 'bg-black/40' : 'bg-black/30'} h-[10px] hover:scale-101`}>
+                <td className="px-4 py-4 whitespace-nowrap border-r border-border border-red-600">
                   <div>
                     <div className="text-sm pl-4 font-medium text-foreground">{index +1}</div>
-                    {/* <div className="text-xs text-muted-foreground"> {product.name}</div> */}
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-6 py-4 whitespace-nowrap border-r border-border border-red-600">
                   {product.name}
                     {/*  */}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-6 py-4 whitespace-nowrap border-r border-border border-red-600">
                   <span className="inline-flex items-center px-3 py-1 rounded-lg text-xs font-medium bg-primary/10 text-primary border border-primary/20">
                   {getCategoryName(product.categoryId)}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
+                <td className="px-6 py-4 whitespace-nowrap border-r border-border border-red-600 text-sm text-foreground">
                   {product.unit}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-foreground">
+                <td className="px-6 py-4 whitespace-nowrap border-r border-border border-red-600 text-sm font-mono text-foreground">
                   {product.isServiceProduct ? "True" : "False"}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
+                <td className="px-6 py-4 whitespace-nowrap border-r border-border border-red-600 text-sm text-foreground">
                   {product.usesPerUnit}
                 </td>
-                <td className={`px-6 py-4 whitespace-nowrap ${product.currentStock <= product.minStock ? 'bg-red-600':''}`}>
+                <td className={`px-6 py-4 whitespace-nowrap border-r border-border border-red-600 ${product.currentStock <= product.minStock ? 'bg-red-600':''}`}>
                   <div className="text-sm text-foreground">
                     Current: <span className="font-medium">{product.currentStock}</span>
                   </div>
@@ -98,7 +97,7 @@ const ProductTable = ({ products, categories }) => {
                     Min: {product.minStock}
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <td className="px-6 py-4 whitespace-nowrap border-r border-red-600 border-border text-right text-sm font-medium">
                   <div className="flex items-center justify-end space-x-2">
                     <button
                       onClick={() => onEdit(product)}

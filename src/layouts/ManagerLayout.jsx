@@ -6,15 +6,10 @@ import ProductPage from "../Pages/ProductPage";
 import ProductModal from "../Components/ProductModal";
 
 export default function ManagerLayout() {
-  const navBtn = [
-    { name: "Home", page: "/manager" }, // /manager/
-    { name: "Products", page: "/manager/products" }, // /manager/products
-    { name: "Sales", page: "/manager/sales" }, // /manager/sales
-  ];
 
   return (
     <div className="w-[100vw] h-[100vh]">
-      <Navbar btns={navBtn} />
+      <Navbar />
 
       <main className="w-full h-[80%]">
         <Routes>
