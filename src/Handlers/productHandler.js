@@ -11,6 +11,8 @@ export const validateForm = (formData, setErrors) => {
       newErrors.name = "Name can not contain special characters";
     if (!formData.sku.trim()) newErrors.sku = "SKU is required";
     if (!formData.unit.trim()) newErrors.unit = "Unit is required";
+    else if (specialCharPattern.test(formData.unit))
+      newErrors.unit = "Unit can not contain special characters";
     if (formData.usesPerUnit < 0)
       newErrors.currentStock = "Uses cannot be negative";
     if (formData.currentStock < 0)

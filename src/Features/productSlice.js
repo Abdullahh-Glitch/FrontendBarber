@@ -3,9 +3,11 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     isProductModal: false,
     isProductCategoryModal: false,
+    isConfirmDialog: false,
 
     selectedProduct: null,
     selectedCategory: null,
+    selectedProductId: null,
 };
 
 const productSlice = createSlice({
@@ -35,6 +37,14 @@ const productSlice = createSlice({
         setSelectedCategory: (state, action) => {
             state.selectedCategory = action.payload;
         },
+        openConfirmDialog: (state,action) => {
+            state.isConfirmDialog = true;
+            state.selectedProductId = action.payload;
+        },
+        closeConfirmDialog: (state) => {
+            state.isConfirmDialog = false;
+            state.selectedProductId = null;
+        },
     },
 });
 
@@ -45,6 +55,8 @@ export const {
     closeProductCategoryModal,
     setSelectedProduct,
     setSelectedCategory,
+    openConfirmDialog,
+    closeConfirmDialog,
 } = productSlice.actions;
 
 export default productSlice.reducer;

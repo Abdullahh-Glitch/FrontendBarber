@@ -74,23 +74,22 @@ const ProductModal = ({ categories }) => {
     if (!validateForm(formData,setErrors)) return;
 
     if (!product) {
-      try {
-        await saveProduct(formData);
-        clearForm();
-      } catch (error) {
-        console.log("SERVER ERROR:", error.response?.data);
-      }
+      saveProduct(formData, {
+        onSuccess: () => {
+          clearForm();
+        },
+        onError: (error) => {
+          console.log("SERVER ERROR:", error.response?.data);
+        },
+      });
     }
-
     if (product) {
-      try {
-        await EditProducts({ productId: id, product: formData });
-        clearForm();
-      } catch (error) {
-        console.error("Error saving product:", error);
-      }
-    }
-  };
+        EditProducts({ productId: id, product: formData },{
+          onSuccess : ()=>{clearForm();},
+          onError: (error) => {console.log("SERVER ERROR:", error.response?.data);}
+        });
+    };
+  }
 
   const handleChange = (field, value) => {
     setFormData((prev) => {

@@ -24,3 +24,10 @@ export const postProductCategory = async(name)=>{
   const response = await axiosInstance.post('/api/products/c',name);
   return response.data;
 }
+
+export const deleteProduct = async(prdId)=>{
+  console.log(prdId);
+  
+  const response = await axiosInstance.put(`/api/products/p/d/${prdId}`);
+  return response.massage;
+}

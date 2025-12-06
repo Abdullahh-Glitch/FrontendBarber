@@ -1,5 +1,5 @@
 import { useMutation, useQuery,useQueryClient } from '@tanstack/react-query';
-import { getProducts,getProductCategories, postProducts, updateProducts,postProductCategory } from '../Apis/productApi';
+import { getProducts,getProductCategories, postProducts, updateProducts,postProductCategory, deleteProduct } from '../Apis/productApi';
 
 export const GetProducts = ()=>{
     return useQuery({
@@ -43,6 +43,16 @@ export const PostProductCategory = ()=>{
         mutationFn : postProductCategory,
         onSuccess:()=>{
             queryClient.invalidateQueries(['products/c'])
+        }
+    })
+}
+
+export const DeleteProduct = ()=>{
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn : (prdId)=>deleteProduct(prdId),
+        onSuccess:()=>{
+            queryClient.invalidateQueries(['products/g/p'])
         }
     })
 }

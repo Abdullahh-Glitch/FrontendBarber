@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { openProductModal } from "../Features/productSlice";
 import ProductTable from "../Components/ProductTable";
 import ProductModal from "../Components/ProductModal";
+import ConfirmDialog from "../Components/ConfirmDialog";
 
 export default function ProductPage() {
   const dispatch = useDispatch();
@@ -15,6 +16,7 @@ export default function ProductPage() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const productModelState = useSelector((state) => state.products.isProductModal);
+  const confirmDialog = useSelector((state) => state.products.isConfirmDialog);
   const [filteredProducts, setFilteredProducts] = useState(productData || []);
 
   useEffect(() => {
@@ -46,9 +48,9 @@ const handdleOpenNewProductModal=()=>{
   if(productIsError) return <h1>Products Error : {productError.message}</h1>
 
   return (
-    <div className="fixed w-full h-full bg-black/90 text-white flex flex-col items-center justify-center">
+    <div className="fixed w-full h-full bg-black/95 text-white flex flex-col items-center justify-center">
       <div className="h-[30%] w-full flex items-center justify-center">
-        <div className="w-[90%] h-[60%] border rounded-[30px] flex flex-col justify-center">
+        <div className="w-[90%] h-[60%] bg-black/90 border border-red-300 rounded-[30px] flex flex-col justify-center shadow-lg shadow-red-500">
           <h1 className="pl-10 text-2xl font-bold text-foreground">PRODUCTS</h1>
           <p className="pl-10 text-muted-foreground">
             Manage your barber shop inventory and products
@@ -57,6 +59,7 @@ const handdleOpenNewProductModal=()=>{
       </div>
       {/* main */}
       <div>{productModelState && (<ProductModal categories={categories}/>)}</div>
+      <div>{confirmDialog && (<ConfirmDialog />)}</div>
       <div className="h-[70%] w-full flex justify-center ">
         <div className="w-[90%] h-[100%] flex flex-col">
 
@@ -91,8 +94,8 @@ const handdleOpenNewProductModal=()=>{
             </div>
 
           </div>
-          <div className="mt-4 h-[70%] overflow-auto">
-            <ProductTable products={filteredProducts} categories={categories} onDelete={()=>console.log("Deleted")}/>
+          <div className="mt-4 h-[70%] overflow-y-auto">
+            <ProductTable products={filteredProducts} categories={categories} />
           </div>
         </div>
       </div>

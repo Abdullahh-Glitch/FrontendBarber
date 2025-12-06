@@ -1,9 +1,9 @@
 import React from 'react';
 import { Edit, Trash2 } from 'lucide-react';
 import { useDispatch } from 'react-redux';
-import { openProductModal, setSelectedProduct } from '../Features/productSlice';
+import { openProductModal, setSelectedProduct, openConfirmDialog } from '../Features/productSlice';
 
-const ProductTable = ({ products, categories, onDelete }) => {
+const ProductTable = ({ products, categories }) => {
   const dispatch = useDispatch();
   const getCategoryName = (categoryId) => {
     const category = categories.find(c => c.id === categoryId);
@@ -13,6 +13,10 @@ const ProductTable = ({ products, categories, onDelete }) => {
   const onEdit = (product)=>{
     dispatch(openProductModal());
     dispatch(setSelectedProduct(product))
+  }
+
+  const onDelete = (id)=>{
+    dispatch(openConfirmDialog(id));
   }
 
   if (products.length === 0) {
@@ -28,11 +32,11 @@ const ProductTable = ({ products, categories, onDelete }) => {
   }
 
   return (
-    <div className="bg-gradient-card rounded-2xl border border-border overflow-hidden shadow-lg">
-      <div className="overflow-x-auto">
+    <div className="bg-gradient-card rounded-2xl border border-border overflow-x-hidden shadow-lg">
+      <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-green-500 scrollbar-track-red-200">
         <table className="w-full">
-          <thead className="bg-muted/50 backdrop-blur-sm border-b">
-            <tr>
+          <thead className="bg-white/20 backdrop-blur-sm border-b">
+            <tr >
               <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Sr
               </th>
@@ -61,7 +65,7 @@ const ProductTable = ({ products, categories, onDelete }) => {
           </thead>
           <tbody className="bg-card/50 divide-y divide-border">
             {products.map((product, index) => (
-              <tr key={index} className={`hover:bg-muted/70 transition-colors duration-200 ${index % 2 === 0 ? 'bg-card/30' : 'bg-card/60'}`}>
+              <tr key={index} className={`hover:bg-gray-700 transition-colors duration-100 ${index % 2 === 0 ? 'bg-black/40' : 'bg-black/30'} h-[10px] hover:scale-101`}>
                 <td className="px-4 py-4 whitespace-nowrap">
                   <div>
                     <div className="text-sm pl-4 font-medium text-foreground">{index +1}</div>
@@ -98,17 +102,17 @@ const ProductTable = ({ products, categories, onDelete }) => {
                   <div className="flex items-center justify-end space-x-2">
                     <button
                       onClick={() => onEdit(product)}
-                      className="text-muted-foreground hover:text-primary p-2 rounded-lg hover:bg-primary/10 transition-all duration-100 hover:scale-105"
+                      className="text-muted-foreground hover:text-primary p-2 rounded-lg hover:bg-blue-500 transition-all duration-100 hover:scale-105"
                       title="Edit Product"
                     >
-                      <Edit className="h-4 w-4" />
+                      <Edit className="h-4 w-4" onClick={() => onEdit(product)} />
                     </button>
                     <button
-                      onClick={() => onDelete(product)}
-                      className="text-muted-foreground hover:text-destructive p-2 rounded-lg hover:bg-destructive/10 transition-all duration-200 hover:scale-105"
+                      onClick={() => onDelete(product.id)}
+                      className="text-muted-foreground hover:text-destructive p-2 rounded-lg hover:bg-red-500 transition-all duration-200 hover:scale-105"
                       title="Delete Product"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-4 w-4" onClick={()=> onDelete(product.id)} />
                     </button>
                   </div>
                 </td>
