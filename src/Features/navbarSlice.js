@@ -4,6 +4,7 @@ const initialState = {
     managerbtn : [
     { name: "Home", page: "/manager" },
     { name: "Products", page: "/manager/products" },
+    { name: "Services", page: "/manager/services" },
     { name: "Sales", page: "/manager/sales" },
   ],
     salesmanbtn : [{}],

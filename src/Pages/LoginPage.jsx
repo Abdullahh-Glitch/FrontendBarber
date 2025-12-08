@@ -25,7 +25,7 @@ export default function LoginPage() {
         console.log(confirmation.role);
           dispatch(setAuth({role: confirmation.role, user: username}));
           setLabel("");     
-        if (confirmation.role == 1) {
+        if (confirmation.role == 2) {
           Navigate("/manager");
         }
       } else {

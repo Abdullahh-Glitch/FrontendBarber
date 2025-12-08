@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import ManagerHomePage from "../Pages/ManagerHomePage";
 import ProductPage from "../Pages/ProductPage";
-import ProductModal from "../Components/ProductModal";
+import ServicesPage from "../Pages/ServicesPage";
 
 export default function ManagerLayout() {
 
@@ -15,6 +15,7 @@ export default function ManagerLayout() {
         <Routes>
           <Route path="" element={<ManagerHomePage />} />
           <Route path="products" element={<ProductPage />} />
+          <Route path="services" element={<ServicesPage />} />
           <Route path="sales" element={<h1>Sales Page</h1>} />
         </Routes>
       </main>

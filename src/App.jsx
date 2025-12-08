@@ -29,7 +29,7 @@ export default function App() {
         <Route
           path="/manager/*"
           element={
-            <PrivateRoute auth={auth} role={role} allowedRoles={[1]}>
+            <PrivateRoute auth={auth} role={role} allowedRoles={[2]}>
               <ManagerLayout />
             </PrivateRoute>
           }
