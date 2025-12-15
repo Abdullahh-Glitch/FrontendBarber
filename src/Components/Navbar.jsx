@@ -6,6 +6,10 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const btns = useSelector((state) => state.navbar.managerbtn);
 
+  const handleToggle=()=>{
+    document.documentElement.classList.toggle('dark');
+  }
+
   return (
     <nav className="w-full bg-black text-white sticky top-0 z-50 shadow-lg">
       <div className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
@@ -29,6 +33,7 @@ export default function Navbar() {
               </Link>
             </li>
           ))}
+          <li><button onClick={handleToggle}>toggle</button></li>
         </ul>
 
         {/* Mobile Hamburger */}

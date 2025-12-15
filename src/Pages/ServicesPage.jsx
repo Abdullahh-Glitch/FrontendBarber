@@ -48,9 +48,9 @@ const handdleOpenNewProductModal=()=>{
   if(productIsError) return <h1>Products Error : {productError.message}</h1>
 
   return (
-    <div className="fixed w-full h-full bg-gradient-to-r from-slate-300 to-slate-500 flex flex-col items-center justify-center">
+    <div className="fixed w-full h-full bg-gradient-to-r from-[var(--from-color)] to-[var(--to-color)] flex flex-col items-center justify-center">
       <div className="h-[25%] w-full flex items-center justify-center">
-        <div className="w-[90%] h-[60%] bg-gradient-to-r from-slate-300 to-slate-500 border border-blue-300 rounded-[30px] flex flex-col justify-center shadow-lg shadow-black">
+        <div className="w-[90%] h-[60%] bg-gradient-to-r from-[var(--secondary-from)] to-[var(--to-color)] border border-[var(--border-color)] rounded-[30px] flex flex-col justify-center shadow-[var(--shadow-color)] text-[var(--text-color)]">
           <h1 className="pl-10 text-2xl font-bold text-foreground">Services</h1>
           <p className="pl-10 text-muted-foreground">
             Manage your barber shop Services
@@ -60,8 +60,8 @@ const handdleOpenNewProductModal=()=>{
       {/* main */}
       <div>{serviceModelState && (<ProductModal categories={categories}/>)}</div>
       <div>{confirmDialog && (<ConfirmDialog />)}</div>
-      <div className="h-[75%] w-full flex justify-center">
-        <div className="w-[98%] h-[100%] flex flex-col border border-blue-300 rounded-[30px] bg-gradient-to-r from-gray-400 to-slate-500 shadow-lg shadow-darkgrey-600 p-6">
+      <div className="h-[75%] w-full flex justify-center text-[var(--text-color)]">
+        <div className="w-[98%] h-[100%] flex flex-col border border-[var(--border-color)] rounded-[30px] bg-gradient-to-r from-[var(--secondary-from)] to-[var(--secondary-to)] shadow-[var(--shadow-color)] p-6">
 
           <div className="flex flex-col sm:flex-row gap-4 w-[100%]">
 
@@ -95,7 +95,7 @@ const handdleOpenNewProductModal=()=>{
 
           </div>
           <div className="mt-4 h-[70%] overflow-y-auto">
-            <ProductTable products={filteredProducts} categories={categories} />
+            <ProductTable products={[]} categories={[]} />
           </div>
         </div>
       </div>

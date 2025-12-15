@@ -48,9 +48,9 @@ const handdleOpenNewProductModal=()=>{
   if(productIsError) return <h1>Products Error : {productError.message}</h1>
 
   return (
-    <div className="fixed w-full h-full bg-black/95 text-white flex flex-col items-center justify-center">
+    <div className="fixed w-full h-full bg-gradient-to-r from-[var(--from-color)] to-[var(--to-color)] text-white flex flex-col items-center justify-center">
       <div className="h-[30%] w-full flex items-center justify-center">
-        <div className="w-[90%] h-[60%] bg-black/90 border border-red-300 rounded-[30px] flex flex-col justify-center shadow-lg shadow-red-500">
+        <div className="w-[90%] h-[60%] bg-gradient-to-r from-[var(--secondary-from)] to-[var(--to-color)] border border-[var(--border-color)] rounded-[30px] flex flex-col justify-center shadow-[var(--shadow-color)] text-[var(--text-color)]">
           <h1 className="pl-10 text-2xl font-bold text-foreground">PRODUCTS</h1>
           <p className="pl-10 text-muted-foreground">
             Manage your barber shop inventory and products
@@ -60,8 +60,8 @@ const handdleOpenNewProductModal=()=>{
       {/* main */}
       <div>{productModelState && (<ProductModal categories={categories}/>)}</div>
       <div>{confirmDialog && (<ConfirmDialog />)}</div>
-      <div className="h-[70%] w-full flex justify-center ">
-        <div className="w-[90%] h-[100%] flex flex-col">
+      <div className="h-[75%] w-full flex justify-center text-[var(--text-color)]">
+        <div className="w-[98%] h-[100%] flex flex-col border border-[var(--border-color)] rounded-[30px] bg-gradient-to-r from-[var(--secondary-from)] to-[var(--secondary-to)] shadow-[var(--shadow-color)] p-6">
 
           <div className="flex flex-col sm:flex-row gap-4 w-[100%]">
 
@@ -69,7 +69,7 @@ const handdleOpenNewProductModal=()=>{
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
               <input
                 type="text"
-                placeholder="Search products by name..."
+                placeholder="Search Service by name..."
                 value={searchTerm}
                 onChange={handdleSearch}
                 className="w-[100%] pl-12 pr-4 py-3 border border-border rounded-xl bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary shadow-sm transition-all duration-200"
@@ -88,7 +88,7 @@ const handdleOpenNewProductModal=()=>{
                 className="px-6 py-3 bg-gradient-primary border text-primary-foreground rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center gap-2 font-medium"
               >
                 <Plus className="h-4 w-4" />
-                Add Product
+                Add Service
               </button>
 
             </div>

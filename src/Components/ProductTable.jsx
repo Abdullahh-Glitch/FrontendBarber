@@ -21,18 +21,18 @@ const ProductTable = ({ products, categories }) => {
 
   if (products.length === 0) {
     return (
-      <div className="bg-gradient-card rounded-2xl border border-border p-12 text-center shadow-lg">
+      <div className="bg-gradient-to-r from-[var(--from-color)] to-[var(--to-color)] rounded-2xl border border-border p-12 text-center shadow-lg">
         <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
           <div className="text-2xl">📦</div>
         </div>
-        <p className="text-muted-foreground text-lg font-medium">No products found</p>
-        <p className="text-muted-foreground text-sm mt-2">Add your first product to get started</p>
+        <p className="text-muted-foreground text-lg font-medium">No Products found</p>
+        <p className="text-muted-foreground text-sm mt-2">Add your first Product to get started</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-gradient-card w-full h-[98%] rounded-2xl shadow-lg">
+    <div className="w-full h-[98%] rounded-2xl shadow-lg">
       <div className="overflow-auto thin-scrollbar rounded-b-2xl h-full">
         <table className="w-full border border-border rounded-2xl">
           <thead className="bg-white/40 backdrop-blur-sm sticky top-0 z-10">
@@ -63,33 +63,33 @@ const ProductTable = ({ products, categories }) => {
               </th>
             </tr>
           </thead>
-          <tbody className="bg-black divide-y divide-border border border-border">
+          <tbody className="divide-y divide-border border border-border">
             {products.map((product, index) => (
-              <tr key={index} className={`hover:bg-gray-700 transition-colors border border-red-600 border-border  duration-100 ${index % 2 === 0 ? 'bg-black/40' : 'bg-black/30'} h-[10px] hover:scale-101`}>
-                <td className="px-4 py-4 whitespace-nowrap border-r border-border border-red-600">
+              <tr key={index} className={`hover:bg-gray-700 transition-colors border border-[var(--border-color)] border-border  duration-100 ${index % 2 === 0 ? 'bg-black/40' : 'bg-black/30'} h-[5px]`}>
+                <td className="px-4 py-4 whitespace-nowrap border-r border-border border-[var(--border-color)]">
                   <div>
                     <div className="text-sm pl-4 font-medium text-foreground">{index +1}</div>
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap border-r border-border border-red-600">
+                <td className="px-6 py-4 whitespace-nowrap border-r border-border border-[var(--border-color)]">
                   {product.name}
                     {/*  */}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap border-r border-border border-red-600">
+                <td className="px-6 py-4 whitespace-nowrap border-r border-border border-[var(--border-color)]">
                   <span className="inline-flex items-center px-3 py-1 rounded-lg text-xs font-medium bg-primary/10 text-primary border border-primary/20">
                   {getCategoryName(product.categoryId)}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap border-r border-border border-red-600 text-sm text-foreground">
+                <td className="px-6 py-4 whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm text-foreground">
                   {product.unit}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap border-r border-border border-red-600 text-sm font-mono text-foreground">
+                <td className="px-6 py-4 whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm font-mono text-foreground">
                   {product.isServiceProduct ? "True" : "False"}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap border-r border-border border-red-600 text-sm text-foreground">
+                <td className="px-6 py-4 whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm text-foreground">
                   {product.usesPerUnit}
                 </td>
-                <td className={`px-6 py-4 whitespace-nowrap border-r border-border border-red-600 ${product.currentStock <= product.minStock ? 'bg-red-600':''}`}>
+                <td className={`px-6 py-4 whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm font-mono ${product.currentStock <= product.minStock ? 'text-destructive font-bold' : 'text-foreground'}`}>
                   <div className="text-sm text-foreground">
                     Current: <span className="font-medium">{product.currentStock}</span>
                   </div>
@@ -97,7 +97,7 @@ const ProductTable = ({ products, categories }) => {
                     Min: {product.minStock}
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap border-r border-red-600 border-border text-right text-sm font-medium">
+                <td className="px-6 py-4 whitespace-nowrap border-r border-[var(--border-color)] border-border text-right text-sm font-medium">
                   <div className="flex items-center justify-end space-x-2">
                     <button
                       onClick={() => onEdit(product)}
