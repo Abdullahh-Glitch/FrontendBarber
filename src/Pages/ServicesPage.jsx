@@ -1,51 +1,48 @@
 import React, { useEffect, useState } from "react";
 import { Plus, Search, Filter} from "lucide-react";
-import { GetProducts,GetProductCategories } from "../Hooks/useProducts";
+import { GetServices } from "../Hooks/useServices";
 import { useSelector, useDispatch } from "react-redux";
-import { openProductModal } from "../Features/productSlice";
+import { openServiceModal } from "../Features/serviceSlice";
 import ProductTable from "../Components/ProductTable";
-import ProductModal from "../Components/ProductModal";
+import ServiceModel from "../Components/ServiceModel";
 import ConfirmDialog from "../Components/ConfirmDialog";
 
 export default function ServicesPage() {
   const dispatch = useDispatch();
 
-  const{ data: productData, isLoading: productIsLoading, isError: productIsError, error: productError} =GetProducts();
-  const { data: categories, isLoading: categoriesLoading, isError: categoriesIsError, error: categoriesError} = GetProductCategories();
+  const{ data: serviceData, isLoading: serviceIsLoading, isError: serviceIsError, error: serviceError} =GetServices();
 
 
   const [searchTerm, setSearchTerm] = useState("");
   const serviceModelState = useSelector((state) => state.services.isServiceModal);
-  const confirmDialog = useSelector((state) => state.products.isConfirmDialog);
-  const [filteredProducts, setFilteredProducts] = useState(productData || []);
+  const confirmDialog = useSelector((state) => state.services.isConfirmDialog);
+  const [filteredProducts, setFilteredProducts] = useState(serviceData || []);
 
   useEffect(() => {
-  setFilteredProducts(productData || []);
-}, [productData]);
+  setFilteredProducts(serviceData || []);
+}, [serviceData]);
 
   const handdleSearch=(e)=>{
     const term = e.target.value;
     setSearchTerm(term);
 
-    const results = (productData || []).filter((product) => {
-    const name = product?.name?.toLowerCase() || "";
+    const results = (serviceData || []).filter((service) => {
+    const name = service?.name?.toLowerCase() || "";
     return name.startsWith(term.toLowerCase().trim());
   });
 
   setFilteredProducts(results);
   }
 
-const handdleOpenNewProductModal=()=>{
-  dispatch(openProductModal());
+const handdleOpenNewServiceModal=()=>{
+  dispatch(openServiceModal());
 }
 
 
 
-  if(productIsLoading) return <h1>Loading Products....</h1>
-  if(categoriesLoading) return <h1>Loading Category....</h1>
+  if(serviceIsLoading) return <h1>Loading Services....</h1>
 
-  if(categoriesIsError) return <h1>Category Error : {categoriesError.message}</h1>
-  if(productIsError) return <h1>Products Error : {productError.message}</h1>
+  if(serviceIsError) return <h1>Services Error : {serviceError.message}</h1>
 
   return (
     <div className="fixed w-full h-full bg-gradient-to-r from-[var(--from-color)] to-[var(--to-color)] flex flex-col items-center justify-center">
@@ -58,7 +55,7 @@ const handdleOpenNewProductModal=()=>{
         </div>
       </div>
       {/* main */}
-      <div>{serviceModelState && (<ProductModal categories={categories}/>)}</div>
+      <div>{serviceModelState && (<ServiceModel />)}</div>
       <div>{confirmDialog && (<ConfirmDialog />)}</div>
       <div className="h-[75%] w-full flex justify-center text-[var(--text-color)]">
         <div className="w-[98%] h-[100%] flex flex-col border border-[var(--border-color)] rounded-[30px] bg-gradient-to-r from-[var(--secondary-from)] to-[var(--secondary-to)] shadow-[var(--shadow-color)] p-6">
@@ -84,7 +81,7 @@ const handdleOpenNewProductModal=()=>{
               </button>
 
               <button
-                onClick={handdleOpenNewProductModal}
+                onClick={handdleOpenNewServiceModal}
                 className="px-6 py-3 bg-gradient-primary border text-primary-foreground rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center gap-2 font-medium"
               >
                 <Plus className="h-4 w-4" />

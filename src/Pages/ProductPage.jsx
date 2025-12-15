@@ -88,7 +88,7 @@ const handdleOpenNewProductModal=()=>{
                 className="px-6 py-3 bg-gradient-primary border text-primary-foreground rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center gap-2 font-medium"
               >
                 <Plus className="h-4 w-4" />
-                Add Service
+                Add Product
               </button>
 
             </div>
