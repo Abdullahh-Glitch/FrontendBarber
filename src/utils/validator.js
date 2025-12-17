@@ -1,30 +1,29 @@
-
-// Only Numbers
+// Only Numbers (integer)
 export const isOnlyNumber = (value) => {
-  return /^\d+$/.test(value);
+  return /^\d+$/.test(String(value));
 };
 
-// Only Letters (with space)
+// Only Letters (with spaces)
 export const isOnlyLetters = (value) => {
-  return /^[A-Za-z ]+$/.test(value);
+  return /^[A-Za-z ]+$/.test(String(value));
 };
 
-// No special characters
+// Has Special Characters
 export const hasSpecialChars = (value) => {
-  return /^[A-Za-z0-9 ]+$/.test(value);
+  return /[^A-Za-z0-9 ]/.test(String(value));
 };
 
 // Valid Email
 export const isValidEmail = (value) => {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value));
 };
 
 // Valid Phone Number (10 digits)
 export const isValidPhoneNumber = (value) => {
-  return /^\d{10}$/.test(value);
+  return /^\d{10}$/.test(String(value));
 };
 
-// Valid Price (positive number with up to 2 decimal places)
+// Valid Price (positive, up to 2 decimals)
 export const isValidPrice = (value) => {
-  return /^\d+(\.\d{1,2})?$/.test(value);
+  return /^\d+(\.\d{1,2})?$/.test(String(value));
 };

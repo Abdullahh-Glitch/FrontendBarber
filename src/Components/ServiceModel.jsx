@@ -74,7 +74,9 @@ const ProductModal = () => {
     }
     if (service) {
         EditService({ serviceId: id, service: formData },{
-          onSuccess : ()=>{clearForm();},
+          onSuccess : ()=>{
+            clearForm();
+          },
           onError: (error) => {console.log("SERVER ERROR:", error.response?.data);}
         });
     };

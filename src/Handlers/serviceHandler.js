@@ -5,7 +5,7 @@ export const validateForm = (formData, setErrors) => {
     const newErrors = {};
 
     if (!formData.name.trim()) newErrors.name = "Name is required";
-    else if (!hasSpecialChars(formData.name)) newErrors.name = "Name can not contain special characters";
+    else if (hasSpecialChars(formData.name)) newErrors.name = "Name can not contain special characters";
 
     if (formData.price < 0) newErrors.price = "Price cannot be negative";
     else if (!isOnlyNumber(formData.price.toString())) newErrors.price = "Price must be a valid number";

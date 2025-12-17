@@ -1,33 +1,54 @@
-import {isOnlyLetters,isOnlyNumber,hasSpecialChars,isValidPrice} from '../utils/validator'
+import {
+  isOnlyLetters,
+  isOnlyNumber,
+  hasSpecialChars,
+} from "../utils/validator";
 
 export const validateForm = (formData, setErrors) => {
-    const newErrors = {};
+  const errors = {};
 
-    if (!formData.categoryId) newErrors.categoryId = "Category is required";
-    else if (!isOnlyNumber(formData.categoryId.toString())) newErrors.categoryId = "Category must be a valid number";
+  // Category
+  if (!formData.categoryId)
+    errors.categoryId = "Category is required";
+  else if (!isOnlyNumber(formData.categoryId))
+    errors.categoryId = "Category must be a number";
 
-    if (!formData.name.trim()) newErrors.name = "Name is required";
-    else if (!hasSpecialChars(formData.name)) newErrors.name = "Name can not contain special characters";
+  // Name
+  if (!formData.name?.trim())
+    errors.name = "Name is required";
+  else if (hasSpecialChars(formData.name))
+    errors.name = "Name cannot contain special characters";
 
-    if (!formData.sku.trim()) newErrors.sku = "SKU is required";
-    else if (!hasSpecialChars(formData.sku)) newErrors.sku = "SKU can not contain special characters";
+  // SKU
+  if (!formData.sku?.trim())
+    errors.sku = "SKU is required";
 
-    if (!formData.unit.trim()) newErrors.unit = "Unit is required";
-    else if (!hasSpecialChars(formData.unit)) newErrors.unit = "Unit can not contain special characters";
-    else if (!isOnlyLetters(formData.unit)) newErrors.unit = "Unit must contain only letters";
+  // Unit
+  if (!formData.unit?.trim())
+    errors.unit = "Unit is required";
+  else if (hasSpecialChars(formData.unit))
+    errors.unit = "Unit cannot contain special characters";
+  else if (!isOnlyLetters(formData.unit))
+    errors.unit = "Unit must contain only letters";
 
-    if (formData.usesPerUnit < 0) newErrors.usesPerUnit = "Uses cannot be negative";
-    else if (!isOnlyNumber(formData.usesPerUnit.toString())) newErrors.usesPerUnit = "Uses must be a valid number";
+  // Uses Per Unit
+  if (!isOnlyNumber(formData.usesPerUnit))
+    errors.usesPerUnit = "Uses must be a valid number";
+  else if (formData.usesPerUnit < 0)
+    errors.usesPerUnit = "Uses cannot be negative";
 
-    if (formData.price < 0) newErrors.price = "Price cannot be negative";
-    else if (!isValidPrice(formData.price.toString())) newErrors.price = "Price must be a valid number";
+  // Current Stock
+  if (!isOnlyNumber(formData.currentStock))
+    errors.currentStock = "Current stock must be a valid number";
+  else if (formData.currentStock < 0)
+    errors.currentStock = "Current stock cannot be negative";
 
-    if (formData.currentStock < 0) newErrors.currentStock = "Current stock cannot be negative";
-    else if (!isOnlyNumber(formData.currentStock.toString())) newErrors.currentStock = "Current stock must be a valid number";
+  // Min Stock
+  if (!isOnlyNumber(formData.minStock))
+    errors.minStock = "Minimum stock must be a valid number";
+  else if (formData.minStock < 0)
+    errors.minStock = "Minimum stock cannot be negative";
 
-    if (formData.minStock < 0) newErrors.minStock = "Minimum stock cannot be negative";
-    else if (!isOnlyNumber(formData.minStock.toString())) newErrors.minStock = "Minimum stock must be a valid number";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  setErrors(errors);
+  return Object.keys(errors).length === 0;
+};

@@ -5,8 +5,8 @@ import { useDispatch } from "react-redux";
 import { setAuth,noAuth } from "../Features/authSlice";
 
 export default function LoginPage() {
-  const [username, setUsername] = useState("ab007");
-  const [password, setPassword] = useState("@@))&");
+  const [username, setUsername] = useState("manager");
+  const [password, setPassword] = useState("manager");
   const[label, setLabel] = useState("");
   const [error, setError] = useState("");
   const Navigate = useNavigate();

@@ -70,8 +70,11 @@ const ProductModal = ({ categories }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!validateForm(formData,setErrors)) return;
+    console.log(formData);
+    if (!validateForm(formData,setErrors)) {console.log(errors); return;
+    };
+    console.log("validation passed");
+    
 
     if (!product) {
       saveProduct(formData, {
@@ -310,8 +313,8 @@ const ProductModal = ({ categories }) => {
               {/* Circle */}
               <div
                 className={`absolute top-0.5 left-0.5 w-6 h-6 bg-white rounded-full shadow-md transition-transform duration-200
-        ${formData.isServiceProduct ? "translate-x-7" : "translate-x-0"} 
-        flex items-center justify-center text-xs font-semibold`}
+                ${formData.isServiceProduct ? "translate-x-7" : "translate-x-0"} 
+                flex items-center justify-center text-xs font-semibold`}
               >
                 {formData.isServiceProduct ? "Yes" : "No"}
               </div>

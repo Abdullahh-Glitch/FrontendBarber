@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Plus, Search, Filter} from "lucide-react";
 import { GetServices } from "../Hooks/useServices";
 import { useSelector, useDispatch } from "react-redux";
-import { openServiceModal } from "../Features/serviceSlice";
+import {openServiceModal}from "../Features/serviceSlice";
 import ProductTable from "../Components/ProductTable";
 import ServiceModel from "../Components/ServiceModel";
 import ConfirmDialog from "../Components/ConfirmDialog";
@@ -35,6 +35,7 @@ export default function ServicesPage() {
   }
 
 const handdleOpenNewServiceModal=()=>{
+  // dispatch(openServiceFlow());
   dispatch(openServiceModal());
 }
 
@@ -55,7 +56,7 @@ const handdleOpenNewServiceModal=()=>{
         </div>
       </div>
       {/* main */}
-      <div>{serviceModelState && (<ServiceModel />)}</div>
+      <div>{serviceModelState && <ServiceModel />}</div>
       <div>{confirmDialog && (<ConfirmDialog />)}</div>
       <div className="h-[75%] w-full flex justify-center text-[var(--text-color)]">
         <div className="w-[98%] h-[100%] flex flex-col border border-[var(--border-color)] rounded-[30px] bg-gradient-to-r from-[var(--secondary-from)] to-[var(--secondary-to)] shadow-[var(--shadow-color)] p-6">
