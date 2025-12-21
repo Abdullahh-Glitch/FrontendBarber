@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     isServiceModal: false,
+    isServiceProductModel: false,
     isConfirmDialog: false,
 
     selectedService: null,

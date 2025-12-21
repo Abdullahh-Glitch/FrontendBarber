@@ -50,7 +50,7 @@ const ProductTable = ({ products, categories }) => {
                 Unit
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Service Products?
+                Service Products
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Uses Per Unit
@@ -73,7 +73,6 @@ const ProductTable = ({ products, categories }) => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap border-r border-border border-[var(--border-color)]">
                   {product.name}
-                    {/*  */}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap border-r border-border border-[var(--border-color)]">
                   <span className="inline-flex items-center px-3 py-1 rounded-lg text-xs font-medium bg-primary/10 text-primary border border-primary/20">

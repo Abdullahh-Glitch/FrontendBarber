@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {openServiceModal}from "../Features/serviceSlice";
 import ProductTable from "../Components/ProductTable";
 import ServiceModel from "../Components/ServiceModel";
+import ServiceProductModel from "../Components/ServiceProductModel"
 import ConfirmDialog from "../Components/ConfirmDialog";
 
 export default function ServicesPage() {
@@ -25,6 +26,8 @@ export default function ServicesPage() {
   const handdleSearch=(e)=>{
     const term = e.target.value;
     setSearchTerm(term);
+    console.log(filteredProducts);
+    
 
     const results = (serviceData || []).filter((service) => {
     const name = service?.name?.toLowerCase() || "";
@@ -56,7 +59,7 @@ const handdleOpenNewServiceModal=()=>{
         </div>
       </div>
       {/* main */}
-      <div>{serviceModelState && <ServiceModel />}</div>
+      <div>{serviceModelState && <ServiceProductModel />}</div>
       <div>{confirmDialog && (<ConfirmDialog />)}</div>
       <div className="h-[75%] w-full flex justify-center text-[var(--text-color)]">
         <div className="w-[98%] h-[100%] flex flex-col border border-[var(--border-color)] rounded-[30px] bg-gradient-to-r from-[var(--secondary-from)] to-[var(--secondary-to)] shadow-[var(--shadow-color)] p-6">

@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { closeServiceModal} from "../Features/serviceSlice";
 import { validateForm } from "../Handlers/serviceHandler";
 
-const ProductModal = () => {
+const ServiceModel = () => {
   const dispatch = useDispatch();
   const { mutateAsync: saveService, isPending: isSavePending } = PostServices();
   const { mutateAsync: EditService, isPending: isEditPending } = UpdateServices();
@@ -252,4 +252,4 @@ const ProductModal = () => {
   );
 };
 
-export default ProductModal;
+export default ServiceModel;
