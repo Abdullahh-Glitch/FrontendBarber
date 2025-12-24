@@ -5,6 +5,11 @@ export const getService = async () => {
   return response.data;
 };
 
+export const getServiceForTable = async () => {
+  const response = await axiosInstance.get("/api/services/s/ft");
+  return response.data;
+};
+
 export const postService = async (service)=>{
   const response = await axiosInstance.post("/api/services/s",service);
   return response.data;

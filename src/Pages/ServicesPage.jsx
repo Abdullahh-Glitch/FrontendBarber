@@ -3,6 +3,7 @@ import { Plus, Search, Filter} from "lucide-react";
 import { GetServices } from "../Hooks/useServices";
 import { useSelector, useDispatch } from "react-redux";
 import {openServiceModal}from "../Features/serviceSlice";
+import ServiceTable from "../Components/ServiceTable";
 import ProductTable from "../Components/ProductTable";
 import ServiceModel from "../Components/ServiceModel";
 import ServiceProductModel from "../Components/ServiceProductModel"
@@ -96,7 +97,7 @@ const handdleOpenNewServiceModal=()=>{
 
           </div>
           <div className="mt-4 h-[70%] overflow-y-auto">
-            <ProductTable products={[]} categories={[]} />
+            <ServiceTable services={[{id:"1250",name:"keratein",price:"6000",durationMinutes:"60",prdNo: "3"}]} />
           </div>
         </div>
       </div>
