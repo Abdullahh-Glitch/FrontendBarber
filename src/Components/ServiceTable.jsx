@@ -1,21 +1,41 @@
 import React from 'react';
 import { Edit, Trash2 } from 'lucide-react';
 import { useDispatch } from 'react-redux';
-import { openProductModal, setSelectedProduct, openConfirmDialog } from '../Features/productSlice';
+import{openConfirmDialog, openServiceModelEidt} from "../Features/serviceSlice";
 import { GetServicesForTable } from '../Hooks/useServices';
+import Loader from "./Loader";
 
 const serviceTable = () => {
   const dispatch = useDispatch();
 
-  const{ data: serviceData, isLoading: serviceIsLoading, isError: serviceIsError, error: serviceError} =GetServicesForTable();
+  const{ data: serviceData, isLoading: serviceIsLoading, isError: serviceIsError} =GetServicesForTable();
+  
 
   const onEdit = (product)=>{
-    dispatch(openProductModal());
-    dispatch(setSelectedProduct(product))
+    dispatch(openServiceModelEidt(product));
   }
 
   const onDelete = (id)=>{
     dispatch(openConfirmDialog(id));
+    
+  }
+
+  if (serviceIsLoading) {
+    return (
+      <div className="w-[25%] h-[25%] mt-auto mx-auto">
+        <Loader
+          size={64}
+          text="Getting Services..."
+          color="text-yellow-600"
+        />
+      </div>
+    );
+  }
+
+  if(serviceIsError){
+    <div className="w-[25%] h-[25%] mt-auto mx-auto">
+      <p>Please Refresh the page</p>
+    </div>
   }
 
   if (serviceData?.length === 0) {
@@ -32,9 +52,9 @@ const serviceTable = () => {
 
   return (
     <div className="w-full h-[98%] rounded-2xl shadow-lg">
-      <div className="overflow-auto thin-scrollbar rounded-b-2xl h-full">
+      <div className="overflow-auto thin-scrollbar bg-gradient-to-r from-[var(--table--from)] to-[var(--table--to)] rounded-b-2xl h-full">
         <table className="w-full border border-border rounded-2xl">
-          <thead className="bg-white/40 backdrop-blur-sm sticky top-0 z-10">
+          <thead className="bg-[var(--table--header)] sticky top-0 z-10">
             <tr >
               <th className="px-6 py-3 w-[5%] text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Sr
@@ -51,6 +71,9 @@ const serviceTable = () => {
               <th className="px-6 py-3 w-[15%] text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Total Products Used
               </th>
+              <th className="px-6 py-3 w-[10%] text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                is Active
+              </th>
               <th className="pr-10 py-3 w-[15%] text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Actions
               </th>
@@ -58,7 +81,7 @@ const serviceTable = () => {
           </thead>
           <tbody className="w-full h-full divide-y divide-border border border-border">
             {serviceData?.map((service, index) => (
-              <tr key={service.id} className={`hover:bg-gray-700 transition-colors border border-[var(--border-color)] border-border  duration-100 ${index % 2 === 0 ? 'bg-black/40' : 'bg-black/30'} h-[15px]`}>
+              <tr key={service.id} className={`hover:bg-[var(--row--hover)] transition-colors border border-[var(--border-color)] border-border  duration-100 ${index % 2 === 0 ? 'bg-[var(--row--e)]' : 'bg-[var(--row--o)]'} h-[15px]`}>
                 <td className="px-4 py-4 whitespace-nowrap border-r border-border border-[var(--border-color)]">
                   <div>
                     <div className="text-sm pl-4 font-medium text-foreground">{index +1}</div>
@@ -76,17 +99,20 @@ const serviceTable = () => {
                 <td className="px-6 py-1 whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm text-foreground text-center">
                   {service.prdNo}
                 </td>
+                <td className="px-6 py-4 whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm font-mono text-foreground text-center">
+                  {service.isActive ? "True" : "False"}
+                </td>
                 <td className="px-6 py-1 whitespace-nowrap border-r border-[var(--border-color)] border-border text-right text-sm font-medium">
                   <div className="flex items-center justify-end space-x-2">
                     <button
-                    //   onClick={() => onEdit(service)}
+                      onClick={() => onEdit(service)}
                       className="text-muted-foreground hover:text-primary p-3 rounded-lg hover:bg-blue-500 transition-all duration-100 hover:scale-105"
                       title="Edit service"
                     >
                       <Edit className="h-4 w-15" onClick={() => onEdit(service)} />
                     </button>
                     <button
-                    //   onClick={() => onDelete(service.id)}
+                      onClick={() => onDelete(service.id)}
                       className="text-muted-foreground hover:text-destructive p-2 rounded-lg hover:bg-red-500 transition-all duration-200 hover:scale-105"
                       title="Delete service"
                     >

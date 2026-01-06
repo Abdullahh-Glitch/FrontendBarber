@@ -1,5 +1,5 @@
 import { useMutation, useQuery,useQueryClient } from '@tanstack/react-query';
-import{ getService, getServiceForTable, postService, updateService, deleteService } from '../Apis/serviceApi';
+import{ getService, getServiceForTable, postService, updateService, deleteService, getServiceProductsByServiceId, updateServiceandProducts } from '../Apis/serviceApi';
 
 export const GetServices = ()=>{
     return useQuery({
@@ -46,3 +46,23 @@ export const DeleteService = ()=>{
         }
     })
 }
+
+export const GetServiceProductsByServiceId = (serviceId, options = {}) => {
+  return useQuery({
+    queryKey: ['service/s/p', serviceId],
+    queryFn: () => getServiceProductsByServiceId(serviceId),
+    enabled: !!serviceId,   // 🔑 only fetch in edit mode
+    staleTime: 1000 * 60 * 5,
+    ...options,
+  });
+};
+
+export const UpdateServiceAndProducts = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ serviceId, service, products }) => updateServiceandProducts({ serviceId, service, products }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['service/s/ft']);
+    },
+  });
+};

@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Plus, Search, Filter} from "lucide-react";
-import { GetServices } from "../Hooks/useServices";
+import { GetServices, DeleteService } from "../Hooks/useServices";
 import { useSelector, useDispatch } from "react-redux";
-import {openServiceModal}from "../Features/serviceSlice";
+import {openServiceModal, closeConfirmDialog}from "../Features/serviceSlice";
 import ServiceTable from "../Components/ServiceTable";
-import ProductTable from "../Components/ProductTable";
 import ServiceModel from "../Components/ServiceModel";
 import ServiceProductModel from "../Components/ServiceProductModel"
 import ConfirmDialog from "../Components/ConfirmDialog";
@@ -13,11 +12,14 @@ export default function ServicesPage() {
   const dispatch = useDispatch();
 
   const{ data: serviceData, isLoading: serviceIsLoading, isError: serviceIsError, error: serviceError} =GetServices();
+  const{mutate: softDelete, isPending: deletePending}  = DeleteService();
 
 
   const [searchTerm, setSearchTerm] = useState("");
   const serviceModelState = useSelector((state) => state.services.isServiceModal);
   const confirmDialog = useSelector((state) => state.services.isConfirmDialog);
+  const serviceId = useSelector((state)=>state.services.selectedServiceId);
+  const serviceProductModelstate = useSelector((state)=> state.services.isServiceProductModel);
   const [filteredProducts, setFilteredProducts] = useState(serviceData || []);
 
   useEffect(() => {
@@ -43,16 +45,29 @@ const handdleOpenNewServiceModal=()=>{
   dispatch(openServiceModal());
 }
 
+const onConfirm = ()=>{
+    if(!serviceId) dispatch(closeConfirmDialog());
 
+    softDelete(serviceId,{
+        onSuccess : ()=>{
+          dispatch(closeConfirmDialog());
+        },
+        onError : (error)=>{
+          console.log(error.message);
+        }
+      });
+  }
 
-  if(serviceIsLoading) return <h1>Loading Services....</h1>
+const onCancel = () => {
+    dispatch(closeConfirmDialog());
+  }
 
   if(serviceIsError) return <h1>Services Error : {serviceError.message}</h1>
 
   return (
     <div className="fixed w-full h-full bg-gradient-to-r from-[var(--from-color)] to-[var(--to-color)] flex flex-col items-center justify-center">
       <div className="h-[25%] w-full flex items-center justify-center">
-        <div className="w-[90%] h-[60%] bg-gradient-to-r from-[var(--secondary-from)] to-[var(--to-color)] border border-[var(--border-color)] rounded-[30px] flex flex-col justify-center shadow-[var(--shadow-color)] text-[var(--text-color)]">
+        <div className="w-[90%] h-[60%] bg-gradient-to-r from-[var(--secondary-from)] to-[var(--secondary-to)] border border-[var(--border-color)] rounded-[30px] flex flex-col justify-center shadow-[var(--shadow-color)] text-[var(--text-color)]">
           <h1 className="pl-10 text-2xl font-bold text-foreground">Services</h1>
           <p className="pl-10 text-muted-foreground">
             Manage your barber shop Services
@@ -60,10 +75,11 @@ const handdleOpenNewServiceModal=()=>{
         </div>
       </div>
       {/* main */}
-      <div>{serviceModelState && <ServiceProductModel />}</div>
-      <div>{confirmDialog && (<ConfirmDialog />)}</div>
+      <div>{serviceModelState && <ServiceModel />}</div>
+      <div>{serviceProductModelstate && <ServiceProductModel />}</div>
+      <div>{confirmDialog && (<ConfirmDialog onConfirm={()=>onConfirm()} onCancel={()=>onCancel()} isPending={deletePending} />)}</div>
       <div className="h-[75%] w-full flex justify-center text-[var(--text-color)]">
-        <div className="w-[98%] h-[100%] flex flex-col border border-[var(--border-color)] rounded-[30px] bg-gradient-to-r from-[var(--secondary-from)] to-[var(--secondary-to)] shadow-[var(--shadow-color)] p-6">
+        <div className="w-[98%] h-[100%] flex flex-col border border-[var(--border-color)] rounded-[30px] bg-gradient-to-b from-[var(--main--from)] to-[var(--main--to)] shadow-[var(--shadow-color)] p-6">
 
           <div className="flex flex-col sm:flex-row gap-4 w-[100%]">
 

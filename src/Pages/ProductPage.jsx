@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Plus, Search, Filter} from "lucide-react";
-import { GetProducts,GetProductCategories } from "../Hooks/useProducts";
+import { GetProducts,GetProductCategories,DeleteProduct } from "../Hooks/useProducts";
 import { useSelector, useDispatch } from "react-redux";
-import { openProductModal } from "../Features/productSlice";
+import { openProductModal, closeConfirmDialog } from "../Features/productSlice";
 import ProductTable from "../Components/ProductTable";
 import ProductModal from "../Components/ProductModal";
 import ConfirmDialog from "../Components/ConfirmDialog";
@@ -12,9 +12,11 @@ export default function ProductPage() {
 
   const{ data: productData, isLoading: productIsLoading, isError: productIsError, error: productError} =GetProducts();
   const { data: categories, isLoading: categoriesLoading, isError: categoriesIsError, error: categoriesError} = GetProductCategories();
+  const{mutate: softDelete, isPending: deletePending}  = DeleteProduct();
 
 
   const [searchTerm, setSearchTerm] = useState("");
+  const prdId = useSelector((state)=>state.products.selectedProductId);
   const productModelState = useSelector((state) => state.products.isProductModal);
   const confirmDialog = useSelector((state) => state.products.isConfirmDialog);
   const [filteredProducts, setFilteredProducts] = useState(productData || []);
@@ -39,10 +41,22 @@ const handdleOpenNewProductModal=()=>{
   dispatch(openProductModal());
 }
 
+const onConfirm = ()=>{
+    if(!prdId) dispatch(closeConfirmDialog());
 
+    softDelete(prdId,{
+        onSuccess : ()=>{
+          dispatch(closeConfirmDialog());
+        },
+        onError : (error)=>{
+          console.log(error.message);
+        }
+      });
+  }
 
-  if(productIsLoading) return <h1>Loading Products....</h1>
-  if(categoriesLoading) return <h1>Loading Category....</h1>
+const onCancel = () => {
+    dispatch(closeConfirmDialog());
+  }
 
   if(categoriesIsError) return <h1>Category Error : {categoriesError.message}</h1>
   if(productIsError) return <h1>Products Error : {productError.message}</h1>
@@ -50,7 +64,7 @@ const handdleOpenNewProductModal=()=>{
   return (
     <div className="fixed w-full h-full bg-gradient-to-r from-[var(--from-color)] to-[var(--to-color)] text-white flex flex-col items-center justify-center">
       <div className="h-[30%] w-full flex items-center justify-center">
-        <div className="w-[90%] h-[60%] bg-gradient-to-r from-[var(--secondary-from)] to-[var(--to-color)] border border-[var(--border-color)] rounded-[30px] flex flex-col justify-center shadow-[var(--shadow-color)] text-[var(--text-color)]">
+        <div className="w-[90%] h-[60%] bg-gradient-to-r from-[var(--secondary-from)] to-[var(--secondary-to)] border border-[var(--border-color)] rounded-[30px] flex flex-col justify-center shadow-[var(--shadow-color)] text-[var(--text-color)]">
           <h1 className="pl-10 text-2xl font-bold text-foreground">PRODUCTS</h1>
           <p className="pl-10 text-muted-foreground">
             Manage your barber shop inventory and products
@@ -59,9 +73,9 @@ const handdleOpenNewProductModal=()=>{
       </div>
       {/* main */}
       <div>{productModelState && (<ProductModal categories={categories}/>)}</div>
-      <div>{confirmDialog && (<ConfirmDialog />)}</div>
+      <div>{confirmDialog && (<ConfirmDialog onConfirm={()=>onConfirm()} onCancel={()=>onCancel()} isPending={deletePending} />)}</div>
       <div className="h-[75%] w-full flex justify-center text-[var(--text-color)]">
-        <div className="w-[98%] h-[100%] flex flex-col border border-[var(--border-color)] rounded-[30px] bg-gradient-to-r from-[var(--secondary-from)] to-[var(--secondary-to)] shadow-[var(--shadow-color)] p-6">
+        <div className="w-[98%] h-[100%] flex flex-col border border-[var(--border-color)] rounded-[30px] bg-gradient-to-b from-[var(--main--from)] to-[var(--main--to)] shadow-[var(--shadow-color)] p-6">
 
           <div className="flex flex-col sm:flex-row gap-4 w-[100%]">
 
@@ -72,7 +86,7 @@ const handdleOpenNewProductModal=()=>{
                 placeholder="Search Service by name..."
                 value={searchTerm}
                 onChange={handdleSearch}
-                className="w-[100%] pl-12 pr-4 py-3 border border-border rounded-xl bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary shadow-sm transition-all duration-200"
+                className="w-[100%] pl-12 pr-4 py-3 border border-border rounded-xl bg-card text-foreground placeholder-muted-foreground placeholder-[var(--text-color)] focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary shadow-sm transition-all duration-200"
               />
             </div>
             
@@ -95,7 +109,7 @@ const handdleOpenNewProductModal=()=>{
 
           </div>
           <div className="mt-4 h-[70%] overflow-y-auto">
-            <ProductTable products={filteredProducts} categories={categories} />
+            <ProductTable products={filteredProducts} categories={categories} isLoading={productIsLoading && categoriesLoading} />
           </div>
         </div>
       </div>

@@ -11,7 +11,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="w-full bg-black text-white sticky top-0 z-50 shadow-lg">
+    <nav className="w-full h-[10vh] bg-black text-white sticky top-0 z-50 shadow-lg">
       <div className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
         {/* Logo */}
         <div className="flex items-center gap-3">

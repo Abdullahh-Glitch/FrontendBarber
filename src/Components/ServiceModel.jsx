@@ -1,18 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { X, Plus } from "lucide-react";
-import { PostServices, UpdateServices } from "../Hooks/useServices";
+import { useState, useEffect } from "react";
+import { X } from "lucide-react";
+import { UpdateServices } from "../Hooks/useServices";
 import { useSelector, useDispatch } from "react-redux";
-import { closeServiceModal} from "../Features/serviceSlice";
+import { closeServiceModal, serviceAdded, openServiceProductModal, setSelectedServiceId} from "../Features/serviceSlice";
 import { validateForm } from "../Handlers/serviceHandler";
 
 const ServiceModel = () => {
   const dispatch = useDispatch();
-  const { mutateAsync: saveService, isPending: isSavePending } = PostServices();
   const { mutateAsync: EditService, isPending: isEditPending } = UpdateServices();
 
 
-  const service = useSelector((state) => state.services.selectedService);
-  const isEdit = (service !== null);
+  const service = useSelector((state) => state.services.newService);
+  const isEdit = useSelector((state)=> state.services.edit);
 
   const onClose = () => {
     dispatch(closeServiceModal());
@@ -47,7 +46,7 @@ const ServiceModel = () => {
         name: service.name || "",
         description: service.description || "",
         price: service.price || 0,
-        durationMinutes: service.durationMuntes || 0,
+        durationMinutes: service.durationMinutes || 0,
         isActive: service.isActive ?? true,
       });
     }
@@ -55,31 +54,15 @@ const ServiceModel = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // console.log(formData);
-    
+
+      
 
     if (!validateForm(formData,setErrors)) return;
-    console.log("passed validation");
+    console.log("passed validation");  
     
-
-    if (!service) {
-      saveService(formData, {
-        onSuccess: () => {
-          clearForm();
-        },
-        onError: (error) => {
-          console.log("SERVER ERROR:", error.response?.data);
-        },
-      });
-    }
-    if (service) {
-        EditService({ serviceId: id, service: formData },{
-          onSuccess : ()=>{
-            clearForm();
-          },
-          onError: (error) => {console.log("SERVER ERROR:", error.response?.data);}
-        });
-    };
+    dispatch(serviceAdded(formData));
+    dispatch(setSelectedServiceId(id));
+    dispatch(openServiceProductModal());
   }
 
   const handleChange = (field, value) => {
@@ -189,8 +172,6 @@ const ServiceModel = () => {
                 <p className="text-destructive text-sm mt-1">{errors.description}</p>
               )}
             </div>
-
-
           </div>
 
           {/* Is Active Toggle */}
@@ -228,27 +209,25 @@ const ServiceModel = () => {
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-3 border border-border text-foreground rounded-xl hover:bg-secondary transition-all duration-200 font-medium cursor-pointer"
+              className="px-6 py-3 border border-border text-foreground rounded-xl hover:bg-secondary transition-all duration-200 hover:scale-105 font-medium cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              disabled={isSavePending || isEditPending}
-              className="px-6 py-3 bg-gradient-primary text-primary-foreground rounded-xl hover:shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium cursor-pointer"
+              disabled={isEditPending}
+              className="px-6 py-3 bg-gradient-primary border border-border text-primary-foreground rounded-xl hover:shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium cursor-pointer"
             >
-              {isSavePending
-                ? "Saving..."
-                : isEditPending
+              {isEditPending
                 ? "Updating..."
                 : isEdit
-                ? "Update Service"
-                : "Add Service"}
+                ? "Edit Products"
+                : "Add Products"}
             </button>
           </div>
         </form>
       </div>
-    </div>
+     </div>
   );
 };
 
