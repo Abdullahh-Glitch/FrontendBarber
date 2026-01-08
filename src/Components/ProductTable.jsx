@@ -1,4 +1,3 @@
-import React from 'react';
 import { Edit, Trash2 } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { openProductModal, setSelectedProduct, openConfirmDialog } from '../Features/productSlice';
@@ -8,7 +7,7 @@ const ProductTable = ({ products, categories, isLoading }) => {
   const dispatch = useDispatch();
 
   const getCategoryName = (categoryId) => {
-    const category = categories.find(c => c.id === categoryId);
+    const category = categories?.find(c => c.id === categoryId);
     return category?.name || 'Unknown Category';
   };
 

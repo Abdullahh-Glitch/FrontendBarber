@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Plus, Search, Filter} from "lucide-react";
-import { GetServices, DeleteService } from "../Hooks/useServices";
+import { GetServices, DeleteService, GetServicesForTable } from "../Hooks/useServices";
 import { useSelector, useDispatch } from "react-redux";
 import {openServiceModal, closeConfirmDialog}from "../Features/serviceSlice";
 import ServiceTable from "../Components/ServiceTable";
@@ -11,8 +11,9 @@ import ConfirmDialog from "../Components/ConfirmDialog";
 export default function ServicesPage() {
   const dispatch = useDispatch();
 
-  const{ data: serviceData, isLoading: serviceIsLoading, isError: serviceIsError, error: serviceError} =GetServices();
+  // const{ data: serviceData, isLoading: serviceIsLoading, isError: serviceIsError, error: serviceError} =GetServices();
   const{mutate: softDelete, isPending: deletePending}  = DeleteService();
+  const{ data: serviceData, isLoading: serviceIsLoading, isError: serviceIsError, error:serviceError} =GetServicesForTable();
 
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -113,7 +114,7 @@ const onCancel = () => {
 
           </div>
           <div className="mt-4 h-[70%] overflow-y-auto">
-            <ServiceTable services={[{id:"1250",name:"keratein",price:"6000",durationMinutes:"60",prdNo: "3"}]} />
+            <ServiceTable serviceData={serviceData} serviceIsLoading={serviceIsLoading} serviceIsError={serviceIsError} />
           </div>
         </div>
       </div>

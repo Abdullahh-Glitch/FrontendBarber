@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
-import { UpdateServices } from "../Hooks/useServices";
+import { CheckServiceName } from "../Hooks/useServices";
 import { useSelector, useDispatch } from "react-redux";
 import { closeServiceModal, serviceAdded, openServiceProductModal, setSelectedServiceId} from "../Features/serviceSlice";
 import { validateForm } from "../Handlers/serviceHandler";
 
 const ServiceModel = () => {
   const dispatch = useDispatch();
-  const { mutateAsync: EditService, isPending: isEditPending } = UpdateServices();
 
+ 
 
   const service = useSelector((state) => state.services.newService);
   const isEdit = useSelector((state)=> state.services.edit);
@@ -25,16 +25,7 @@ const ServiceModel = () => {
     isActive: true,
   });
 
-  const clearForm = () => {
-    setId(0);
-    setFormData({
-        name: "",
-        description:"",
-        price:0,
-        durationMinutes: 0,
-        isActive: true,
-    });
-  };
+   const { refetch: checkServiceName, isFetching: checkingName } = CheckServiceName(formData.name);
 
   const [errors, setErrors] = useState({});
   const [id, setId] = useState(0);
@@ -55,10 +46,17 @@ const ServiceModel = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-      
+    if(!isEdit){
+    const result = await checkServiceName();
+    
+    if (result.data?.exists) {
+      setErrors({name :"Service name already exists"});
+      return;
+    }
+    }
 
     if (!validateForm(formData,setErrors)) return;
-    console.log("passed validation");  
+    console.log("passed validation");
     
     dispatch(serviceAdded(formData));
     dispatch(setSelectedServiceId(id));
@@ -215,11 +213,10 @@ const ServiceModel = () => {
             </button>
             <button
               type="submit"
-              disabled={isEditPending}
               className="px-6 py-3 bg-gradient-primary border border-border text-primary-foreground rounded-xl hover:shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium cursor-pointer"
             >
-              {isEditPending
-                ? "Updating..."
+              {checkingName ? 
+                "Validating.."
                 : isEdit
                 ? "Edit Products"
                 : "Add Products"}

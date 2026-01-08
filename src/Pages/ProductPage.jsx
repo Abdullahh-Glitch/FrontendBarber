@@ -41,7 +41,7 @@ const handdleOpenNewProductModal=()=>{
   dispatch(openProductModal());
 }
 
-const onConfirm = ()=>{
+const onConfirm = async()=>{
     if(!prdId) dispatch(closeConfirmDialog());
 
     softDelete(prdId,{

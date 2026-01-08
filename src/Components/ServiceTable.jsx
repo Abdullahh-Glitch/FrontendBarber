@@ -2,13 +2,13 @@ import React from 'react';
 import { Edit, Trash2 } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import{openConfirmDialog, openServiceModelEidt} from "../Features/serviceSlice";
-import { GetServicesForTable } from '../Hooks/useServices';
+
 import Loader from "./Loader";
 
-const serviceTable = () => {
+const ServiceTable = ({serviceData, serviceIsLoading, serviceIsError}) => {
   const dispatch = useDispatch();
 
-  const{ data: serviceData, isLoading: serviceIsLoading, isError: serviceIsError} =GetServicesForTable();
+  
   
 
   const onEdit = (product)=>{
@@ -129,4 +129,4 @@ const serviceTable = () => {
   );
 };
 
-export default serviceTable;
+export default ServiceTable;

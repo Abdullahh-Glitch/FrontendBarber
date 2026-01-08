@@ -1,3 +1,4 @@
+import { Check } from "lucide-react";
 import { axiosInstance } from "./axiosInstance";
 
 export const getService = async () => {
@@ -9,6 +10,19 @@ export const getServiceForTable = async () => {
   const response = await axiosInstance.get("/api/services/s/ft");
   return response.data;
 };
+
+export const CheckName = async (name) => {
+  try {
+    const res = await axiosInstance.get(`/api/services/s/n/${name}`);
+    return res.data; // expected { exists: false }
+  } catch (err) {
+    if (err.response?.status === 409) {
+      // Treat 409 as “name exists”
+      return { exists: true };
+    }
+    throw err; // other errors bubble up
+  }
+}
 
 export const postService = async (data)=>{
   const {service,products} = data;
