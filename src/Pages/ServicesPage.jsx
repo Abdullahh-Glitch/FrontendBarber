@@ -30,12 +30,11 @@ export default function ServicesPage() {
   const handdleSearch=(e)=>{
     const term = e.target.value;
     setSearchTerm(term);
-    console.log(filteredProducts);
     
 
     const results = (serviceData || []).filter((service) => {
     const name = service?.name?.toLowerCase() || "";
-    return name.startsWith(term.toLowerCase().trim());
+    return name.toLowerCase().includes(term);
   });
 
   setFilteredProducts(results);
@@ -114,7 +113,7 @@ const onCancel = () => {
 
           </div>
           <div className="mt-4 h-[70%] overflow-y-auto">
-            <ServiceTable serviceData={serviceData} serviceIsLoading={serviceIsLoading} serviceIsError={serviceIsError} />
+            <ServiceTable serviceData={filteredProducts} serviceIsLoading={serviceIsLoading} serviceIsError={serviceIsError} />
           </div>
         </div>
       </div>

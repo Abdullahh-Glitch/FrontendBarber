@@ -31,7 +31,7 @@ export default function ProductPage() {
 
     const results = (productData || []).filter((product) => {
     const name = product?.name?.toLowerCase() || "";
-    return name.startsWith(term.toLowerCase().trim());
+    return name.toLowerCase().includes(term);
   });
 
   setFilteredProducts(results);
