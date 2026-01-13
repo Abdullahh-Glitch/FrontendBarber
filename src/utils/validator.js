@@ -27,3 +27,8 @@ export const isValidPhoneNumber = (value) => {
 export const isValidPrice = (value) => {
   return /^\d+(\.\d{1,2})?$/.test(String(value));
 };
+
+// DECIMAL(10,2), allows negative
+export const isValidBalance = (value) => {
+  return /^-?\d{1,8}(\.\d{1,2})?$/.test(String(value));
+};

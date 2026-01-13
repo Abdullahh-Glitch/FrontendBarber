@@ -120,7 +120,7 @@ const ServiceProductModelTable = ({ products, setProducts, error }) => {
                     )}
                 </td>
                 <td>
-                  <button className="px-1.5"><CircleX className="hover:bg-red-600 rounded-2xl" onClick={()=>handleDelete(service.productId)} /></button>
+                  <button type="button" className="px-1.5"><CircleX className="hover:bg-red-600 rounded-2xl" onClick={()=>handleDelete(service.productId)} /></button>
                 </td>
               </tr>
             ))}

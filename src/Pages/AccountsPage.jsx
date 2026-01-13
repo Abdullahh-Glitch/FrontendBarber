@@ -1,52 +1,49 @@
 import React, { useEffect, useState } from "react";
 import { Plus, Search, Filter} from "lucide-react";
-import { DeleteService, GetServicesForTable } from "../Hooks/useServices";
+import {GetAccounts, DeleteAccount} from "../Hooks/useAccounts";
 import { useSelector, useDispatch } from "react-redux";
-import {openServiceModal, closeConfirmDialog}from "../Features/serviceSlice";
-import ServiceTable from "../Components/ServiceTable";
-import ServiceModel from "../Components/ServiceModel";
-import ServiceProductModel from "../Components/ServiceProductModel"
+import { openAccountModal, closeConfirmDialog } from "../Features/accountSlice";
+import AccountTable from "../Components/AccountTable";
+import AccountModel from "../Components/AccountModel";
 import ConfirmDialog from "../Components/ConfirmDialog";
 
-export default function ServicesPage() {
+export default function ProductPage() {
   const dispatch = useDispatch();
 
-  const{mutate: softDelete, isPending: deletePending}  = DeleteService();
-  const{ data: serviceData, isLoading: serviceIsLoading, isError: serviceIsError, error:serviceError} = GetServicesForTable();
+  const{ data: AccountsData, isLoading: accountIsLoading, isError: accountIsError, error: accountError} = GetAccounts();
+  const{mutate: softDelete, isPending: deletePending}  = DeleteAccount();
 
 
   const [searchTerm, setSearchTerm] = useState("");
-  const serviceModelState = useSelector((state) => state.services.isServiceModal);
-  const confirmDialog = useSelector((state) => state.services.isConfirmDialog);
-  const serviceId = useSelector((state)=>state.services.selectedServiceId);
-  const serviceProductModelstate = useSelector((state)=> state.services.isServiceProductModel);
-  const [filteredProducts, setFilteredProducts] = useState(serviceData || []);
+  const accId = useSelector((state)=>state.accounts.selectedAccountId);
+  const accountModelState = useSelector((state) => state.accounts.isAccountModal);
+  const confirmDialog = useSelector((state) => state.accounts.isConfirmDialog);
+  const [filteredAccounts, setFilteredAccounts] = useState(AccountsData || []);
 
   useEffect(() => {
-  setFilteredProducts(serviceData || []);
-}, [serviceData]);
+  setFilteredAccounts(AccountsData || []);
+}, [AccountsData]);
 
   const handdleSearch=(e)=>{
     const term = e.target.value;
     setSearchTerm(term);
-    
 
-    const results = (serviceData || []).filter((service) => {
-    const name = service?.name?.toLowerCase() || "";
+    const results = (AccountsData || []).filter((account) => {
+    const name = account?.name?.toLowerCase() || "";
     return name.toLowerCase().includes(term);
   });
 
-  setFilteredProducts(results);
+  setFilteredAccounts(results);
   }
 
-const handdleOpenNewServiceModal=()=>{
-  dispatch(openServiceModal());
+const handdleOpenNewProductModal=()=>{
+  dispatch(openAccountModal());
 }
 
-const onConfirm = ()=>{
-    if(!serviceId) dispatch(closeConfirmDialog());
+const onConfirm = async()=>{
+    if(!accId) dispatch(closeConfirmDialog());
 
-    softDelete(serviceId,{
+    softDelete({accountId: accId},{
         onSuccess : ()=>{
           dispatch(closeConfirmDialog());
         },
@@ -60,21 +57,20 @@ const onCancel = () => {
     dispatch(closeConfirmDialog());
   }
 
-  if(serviceIsError) return <h1>Services Error : {serviceError.message}</h1>
+  if(accountIsError) return <h1>Products Error : {accountError.message}</h1>
 
   return (
-    <div className="fixed w-full h-full bg-gradient-to-r from-[var(--from-color)] to-[var(--to-color)] flex flex-col items-center justify-center">
-      <div className="h-[25%] w-full flex items-center justify-center">
+    <div className="fixed w-full h-full bg-gradient-to-r from-[var(--from-color)] to-[var(--to-color)] text-white flex flex-col items-center justify-center">
+      <div className="h-[30%] w-full flex items-center justify-center">
         <div className="w-[90%] h-[60%] bg-gradient-to-r from-[var(--secondary-from)] to-[var(--secondary-to)] border border-[var(--border-color)] rounded-[30px] flex flex-col justify-center shadow-[var(--shadow-color)] text-[var(--text-color)]">
-          <h1 className="pl-10 text-2xl font-bold text-foreground">Services</h1>
+          <h1 className="pl-10 text-2xl font-bold text-foreground">Accounts</h1>
           <p className="pl-10 text-muted-foreground">
-            Manage your barber shop Services
+            Manage your barber shop accounts
           </p>
         </div>
       </div>
       {/* main */}
-      <div>{serviceModelState && <ServiceModel />}</div>
-      <div>{serviceProductModelstate && <ServiceProductModel />}</div>
+      <div>{accountModelState && (<AccountModel />)}</div>
       <div>{confirmDialog && (<ConfirmDialog onConfirm={()=>onConfirm()} onCancel={()=>onCancel()} isPending={deletePending} />)}</div>
       <div className="h-[75%] w-full flex justify-center text-[var(--text-color)]">
         <div className="w-[98%] h-[100%] flex flex-col border border-[var(--border-color)] rounded-[30px] bg-gradient-to-b from-[var(--main--from)] to-[var(--main--to)] shadow-[var(--shadow-color)] p-6">
@@ -88,7 +84,7 @@ const onCancel = () => {
                 placeholder="Search Service by name..."
                 value={searchTerm}
                 onChange={handdleSearch}
-                className="w-[100%] pl-12 pr-4 py-3 border border-border rounded-xl bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary shadow-sm transition-all duration-200"
+                className="w-[100%] pl-12 pr-4 py-3 border border-border rounded-xl bg-card text-foreground placeholder-muted-foreground placeholder-[var(--text-color)] focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary shadow-sm transition-all duration-200"
               />
             </div>
             
@@ -100,18 +96,18 @@ const onCancel = () => {
               </button>
 
               <button
-                onClick={handdleOpenNewServiceModal}
+                onClick={handdleOpenNewProductModal}
                 className="px-6 py-3 bg-gradient-primary border text-primary-foreground rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center gap-2 font-medium"
               >
                 <Plus className="h-4 w-4" />
-                Add Service
+                Add Product
               </button>
 
             </div>
 
           </div>
           <div className="mt-4 h-[70%] overflow-y-auto">
-            <ServiceTable serviceData={filteredProducts} serviceIsLoading={serviceIsLoading} serviceIsError={serviceIsError} />
+            <AccountTable accounts={filteredAccounts} isLoading={accountIsLoading} />
           </div>
         </div>
       </div>

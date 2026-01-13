@@ -56,12 +56,21 @@ const ServiceProductModel = () => {
     
   }, [isEdit, serviceProductData, productData]);
 
+  const arrangeProducts = ()=>{
+    const payload = selectedProducts.map(
+              ({ name, uses, usesCount, qtyRequired, usesPerUnitOverride, ...rest }) => ({
+                ...rest,
+                qtyRequired: qtyRequired === "" ? 0 : Number(qtyRequired),
+                usesPerUnitOverride: usesPerUnitOverride === "" ? 0 : Number(usesPerUnitOverride),
+              })
+            );
+    return payload;
+  }
+
   const addProduct = (product) => {
     setSelectedProducts((prev) => {
       if (prev.some((p) => p.productId === product.id)) {
-        return prev.map((p) =>
-          p.productId === product.id ? { ...p, qtyRequired: Number(p.qty) + 1 } : p
-        );
+        return prev.map((p) =>p.productId === product.id ? { ...p, usesCount: Number(p.usesCount) + 1} : p);
       } else {
         return [
           ...prev,
@@ -88,16 +97,9 @@ const ServiceProductModel = () => {
 
   const saveNewProducts = async()=>{
     try {
+      const products = arrangeProducts();
 
-      const payload = selectedProducts.map(
-              ({ name, uses, usesCount, qtyRequired, usesPerUnitOverride, ...rest }) => ({
-                ...rest,
-                qtyRequired: qtyRequired === "" ? 0 : Number(qtyRequired),
-                usesPerUnitOverride: usesPerUnitOverride === "" ? 0 : Number(usesPerUnitOverride),
-              })
-            );
-
-      await saveService({service : newService, products : payload}, {
+      await saveService({service : newService, products : products}, {
           onSuccess: async () => {
             console.log("Service Saved");
           },
@@ -113,16 +115,9 @@ const ServiceProductModel = () => {
 
   const editProducts = async()=>{
     try {
+        const products = arrangeProducts();
 
-      const payload = selectedProducts.map(
-              ({ name, uses, usesCount, qtyRequired, usesPerUnitOverride, ...rest }) => ({
-                ...rest,
-                qtyRequired: qtyRequired === "" ? 0 : Number(qtyRequired),
-                usesPerUnitOverride: usesPerUnitOverride === "" ? 0 : Number(usesPerUnitOverride),
-              })
-            );
-
-      await EditService({serviceId : serviceId, service : newService, products : payload}, {
+      await EditService({serviceId : serviceId, service : newService, products : products}, {
           onSuccess: async () => {
             console.log("Service Saved");
           },

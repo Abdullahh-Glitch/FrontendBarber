@@ -56,25 +56,25 @@ const ServiceTable = ({serviceData, serviceIsLoading, serviceIsError}) => {
         <table className="w-full border border-border rounded-2xl">
           <thead className="bg-[var(--table--header)] sticky top-0 z-10">
             <tr >
-              <th className="px-6 py-3 w-[5%] text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              <th className="px-6 py-3 w-[5%] text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Sr
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Name
               </th>
-              <th className="px-6 py-3 w-[20%] text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              <th className="px-6 py-3 w-[20%] text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Price
               </th>
-              <th className="px-6 py-3 w-[15%] text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              <th className="px-6 py-3 w-[15%] text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 durationMinutes
               </th>
-              <th className="px-6 py-3 w-[15%] text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              <th className="px-6 py-3 w-[15%] text-center text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Total Products Used
               </th>
-              <th className="px-6 py-3 w-[10%] text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              <th className="px-6 py-3 w-[10%] text-center text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 is Active
               </th>
-              <th className="pr-10 py-3 w-[15%] text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              <th className="pr-10 py-3 w-[15%] text-right text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Actions
               </th>
             </tr>

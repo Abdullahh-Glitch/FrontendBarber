@@ -4,6 +4,7 @@ import Navbar from "../Components/Navbar";
 import ManagerHomePage from "../Pages/ManagerHomePage";
 import ProductPage from "../Pages/ProductPage";
 import ServicesPage from "../Pages/ServicesPage";
+import AccountsPage from "../Pages/AccountsPage";
 
 export default function ManagerLayout() {
 
@@ -14,6 +15,7 @@ export default function ManagerLayout() {
       <main className="w-full h-[80%]">
         <Routes>
           <Route path="" element={<ManagerHomePage />} />
+          <Route path="accounts" element={<AccountsPage />} />
           <Route path="products" element={<ProductPage />} />
           <Route path="services" element={<ServicesPage />} />
           <Route path="sales" element={<h1>Sales Page</h1>} />

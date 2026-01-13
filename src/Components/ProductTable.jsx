@@ -32,7 +32,7 @@ const ProductTable = ({ products, categories, isLoading }) => {
     );
   }
 
-  if (products.length === 0) {
+  if (products?.length === 0) {
     return (
       <div className="bg-gradient-to-r from-[var(--from-color)] to-[var(--to-color)] rounded-2xl border border-border p-12 text-center shadow-lg">
         <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
@@ -50,28 +50,28 @@ const ProductTable = ({ products, categories, isLoading }) => {
         <table className="w-full border border-border">
           <thead className="bg-[var(--table--header)] sticky top-0 z-10">
             <tr >
-              <th className="py-3 w-[2%] text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              <th className="py-3 w-[2%] text-center text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Sr
               </th>
-              <th className="px-3 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              <th className="px-3 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Name
               </th>
-              <th className="px-3 py-3 w-[19%] text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              <th className="px-3 py-3 w-[19%] text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Category
               </th>
-              <th className="py-3 w-[8%] text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              <th className="py-3 w-[8%] text-center text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Unit
               </th>
-              <th className="py-3 w-[11%] text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              <th className="py-3 w-[11%] text-center text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Service Products
               </th>
-              <th className="py-3 w-[10%] text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              <th className="py-3 w-[10%] text-center text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Uses Per Unit
               </th>
-              <th className="px-3 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              <th className="px-3 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Current Stock
               </th>
-              <th className="pr-10 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              <th className="pr-10 py-3 text-right text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Actions
               </th>
             </tr>
