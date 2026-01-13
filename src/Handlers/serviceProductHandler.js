@@ -1,12 +1,10 @@
 import {isOnlyNumber} from '../utils/validator'
 
 
-export const validate = (value, setErrors) => {
-    let newErrors = "";
+export const validateUsesCount = (value) => {
+  console.log(value);
 
-    if (value <= 0) newErrors = "UsesCount cannot be zero or negative";
-    else if (!isOnlyNumber(value)) newErrors = "usesCount must be a valid number";
-
-    setErrors(newErrors);
-    return newErrors === ""? true : false;
-  };
+  if (value <= 0) return  "UsesCount cannot be zero or negative";
+  if (!isOnlyNumber(value)) return  "UsesCount must be a valid number";
+  return  ""; // no error
+};

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { X } from "lucide-react";
 import { GetProducts } from "../Hooks/useProducts";
 import {
@@ -9,7 +9,7 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import { closeServiceProductModal, openServiceModal } from "../Features/serviceSlice";
 import ServiceProductModelTable from "./ServiceProductModelTable";
-import { validate } from "../Handlers/serviceProductHandler";
+import { validateUsesCount } from "../Handlers/serviceProductHandler";
 
 const ServiceProductModel = () => {
   const dispatch = useDispatch();
@@ -19,7 +19,7 @@ const ServiceProductModel = () => {
   const { mutateAsync: EditService, isPending: isEditPending } = UpdateServiceAndProducts();
 
   const [name, setName] = useState("");
-  const [error, setError] = useState(null);
+  const [error, setError] = useState({});
   const [filteredData, setFilteredData] = useState([]);
   const [got, setGot] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -38,17 +38,12 @@ const ServiceProductModel = () => {
     const merged = serviceProductData.map((sp) => {
       const product = productData.find((p) => p.id === sp.productId);
       const uses = product?.usesPerUnit ?? 0;
-      const qtyRequired = sp.qtyRequired ?? 0;
-      const usesPerUnitOverride = sp.usesPerUnitOverride ?? 0;
-
 
       return {
-        ...sp,
+        productId: sp.productId,
         name: product?.name || "",
         uses,
-        qtyRequired,
-        usesPerUnitOverride,
-        usesCount:((uses * qtyRequired) + usesPerUnitOverride),
+        usesCount: uses * sp.qtyRequired + sp.usesPerUnitOverride,
       };
     });
 
@@ -56,36 +51,40 @@ const ServiceProductModel = () => {
     
   }, [isEdit, serviceProductData, productData]);
 
-  const arrangeProducts = ()=>{
-    const payload = selectedProducts.map(
-              ({ name, uses, usesCount, qtyRequired, usesPerUnitOverride, ...rest }) => ({
-                ...rest,
-                qtyRequired: qtyRequired === "" ? 0 : Number(qtyRequired),
-                usesPerUnitOverride: usesPerUnitOverride === "" ? 0 : Number(usesPerUnitOverride),
-              })
-            );
-    return payload;
-  }
+  const computedProducts = useMemo(() => {
+    return selectedProducts.map((p) => ({
+      ...p,
+      qtyRequired: Math.floor(p.usesCount / p.uses),
+      usesPerUnitOverride: p.usesCount % p.uses,
+    }));
+  }, [selectedProducts]);
 
   const addProduct = (product) => {
     setSelectedProducts((prev) => {
-      if (prev.some((p) => p.productId === product.id)) {
-        return prev.map((p) =>p.productId === product.id ? { ...p, usesCount: Number(p.usesCount) + 1} : p);
-      } else {
-        return [
-          ...prev,
-          {
-            productId: product.id,
-            name: product.name,
-            uses: product.usesPerUnit,
-            qtyRequired: 0,
-            usesPerUnitOverride: 0,
-            usesCount: 0,
-          },
-        ];
+      const exists = prev.find((p) => p.productId === product.id);
+
+      if (exists) {
+        return prev.map((p) =>
+          p.productId === product.id
+            ? { ...p, usesCount: p.usesCount + 1 }
+            : p
+        );
       }
+
+      return [
+        ...prev,
+        {
+          productId: product.id,
+          name: product.name,
+          uses: product.usesPerUnit,
+          usesCount: 1,
+        },
+      ];
     });
+
     setName("");
+    setFilteredData([]);
+    setGot(true);
   };
 
   const onClose = () => {
@@ -95,59 +94,52 @@ const ServiceProductModel = () => {
     dispatch(openServiceModal());
   };
 
-  const saveNewProducts = async()=>{
-    try {
-      const products = arrangeProducts();
-
-      await saveService({service : newService, products : products}, {
-          onSuccess: async () => {
-            console.log("Service Saved");
-          },
-          onError: (error) => {
-            console.log("SERVER ERROR:", error.response?.data);
-            alert(error.response?.data?.message);
-          },
-        });
-    } catch (error) {
-      console.log(error.message);
-    }
-  }
-
-  const editProducts = async()=>{
-    try {
-        const products = arrangeProducts();
-
-      await EditService({serviceId : serviceId, service : newService, products : products}, {
-          onSuccess: async () => {
-            console.log("Service Saved");
-          },
-          onError: (error) => {
-            console.log("SERVER ERROR:", error.response?.data);
-            alert(error.response?.data)
-          },
-        });
-    } catch (error) {
-      console.log(error.message);
-    }
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (validate(selectedProducts.usesCount, setError)) return;
+  const newErrors = {};
+let hasError = false;
+
+selectedProducts.forEach((p) => {
+  const err = validateUsesCount(p.usesCount);
+  if (err) {
+    hasError = true;
+    newErrors[p.productId] = err; // store the actual message
+  }
+});
+console.log(newErrors);
+
+
+if (hasError) {
+  setError(newErrors); // update state once
+  return; // stop submission
+}
+
+    const productsPayload = computedProducts.map(
+      ({ name, uses, usesCount, ...rest }) => ({
+        ...rest,
+        qtyRequired: Math.floor(usesCount / uses),
+        usesPerUnitOverride: usesCount % uses,
+      })
+    );
 
     try {
-      if(!isEdit){
-        saveNewProducts();
-      }
+       if (isEdit) {
+      await EditService({
+        serviceId,
+        service: newService,
+        products: productsPayload,
+      });
+    } else {
+      await saveService({
+        service: newService,
+        products: productsPayload,
+      });
+    }
 
-      if(isEdit){
-        editProducts();
-      }
-
-      setSelectedProducts([]);
-      setName("");
-      dispatch(closeServiceProductModal());
+    setSelectedProducts([]);
+    setName("");
+    dispatch(closeServiceProductModal());
 
     } catch (error) {
       console.log(error);
@@ -156,23 +148,21 @@ const ServiceProductModel = () => {
 
 const handleChange = (e) => {
   const term = e.target.value;
-  setName(term);
+    setName(term);
 
-  if (!term.trim()) {
-    setFilteredData([]);
-    return;
-  }
+    if (!term.trim()) {
+      setFilteredData([]);
+      return;
+    }
 
-  const searchTerm = term.toLowerCase().trim();
+    const results = productData.filter(
+      (product) =>
+        product.isServiceProduct === true &&
+        product.name.toLowerCase().includes(term.toLowerCase())
+    );
 
-  const results = productData.filter(
-    (product) =>
-      product.isServiceProduct === true &&
-      product.name.toLowerCase().includes(searchTerm)
-  );
-
-  setFilteredData(results);
-  setGot(false);
+    setFilteredData(results);
+    setGot(false);
 };
 
 
@@ -252,9 +242,10 @@ const handleChange = (e) => {
           {/* separation */}
           <div className="grid grid-cols-1 overflow-y-auto">
             <ServiceProductModelTable
-              products={selectedProducts}
+              products={computedProducts}
               setProducts={setSelectedProducts}
               error = {error}
+              setError = {setError}
             />
           </div>
 

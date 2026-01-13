@@ -1,32 +1,20 @@
 import { CircleX} from "lucide-react";
 
-
 const ServiceProductModelTable = ({ products, setProducts, error }) => {
 
-  const handleChange = (productId, value, uses) => {
-
-    const qtyRequired = Math.floor(value / uses);
-    const usesPerUnitOverride = value % uses;
-
-    setProducts(prev =>
-      prev.map(p =>
+  const handleChange = (productId, value) => {
+    setProducts((prev) =>
+      prev.map((p) =>
         p.productId === productId
-          ? {
-              ...p,
-              usesCount: value,
-              qtyRequired,
-              usesPerUnitOverride,
-            }
+          ? { ...p, usesCount: value }
           : p
       )
     );
   };
   
-  const handleDelete = (id)=>{
-    setProducts((prev) =>
-      prev.filter((p) => {if(p.productId !== id){return p}})
-    );
-  }
+  const handleDelete = (id) => {
+    setProducts((prev) => prev.filter((p) => p.productId !== id));
+  };
 
   if (products?.length === 0) {
     return (
@@ -56,20 +44,19 @@ const ServiceProductModelTable = ({ products, setProducts, error }) => {
               <th className="px-2 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Name
               </th>
-              <th className="px-2 py-3 w-[3%] text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              <th className="px-2 py-3 w-[8%] text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Uses
               </th>
-              <th className="px-2 py-3 w-[15%] text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              <th className="px-2 py-3 w-[8%] text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Qty
               </th>
-              <th className="px-2 py-3 w-[15%] text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              <th className="px-2 py-3 w-[8%] text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Override
               </th>
-              <th className="px-2 py-3 w-[25%] text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              <th className="px-2 py-3 w-[25%] text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Usage Count
               </th>
-              <th className="w-[8%]">
-              </th>
+              <th className="w-[8%]"></th>
             </tr>
           </thead>
           <tbody className="w-full h-full divide-y divide-border border border-border">
@@ -93,10 +80,10 @@ const ServiceProductModelTable = ({ products, setProducts, error }) => {
                 <td className="text-center whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm text-foreground">
                   {service.uses}
                 </td>
-                <td className="px-1 whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm font-mono text-foreground text-left">
+                <td className="text-center whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm font-mono text-foreground">
                   <p>{service.qtyRequired}</p>
                 </td>
-                <td className="px-1 whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm text-foreground text-center">
+                <td className="whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm text-foreground text-center">
                   <p>{service.usesPerUnitOverride}</p>
                 </td>
                 <td className="px-1 whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm text-foreground text-center">
@@ -108,19 +95,27 @@ const ServiceProductModelTable = ({ products, setProducts, error }) => {
                     onChange={(e) =>
                       handleChange(
                         service.productId,
-                        parseInt(e.target.value) || 0,
-                        service.uses
+                        parseInt(e.target.value) || 0
                       )
                     }
                     className={`w-full px-3 py-2 border rounded-lg bg-background text-foreground
-                 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${error ? "border-destructive" : "border-border"}`}
+                 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${
+                   error ? "border-destructive" : "border-border"
+                 }`}
                   />
-                  {error && (
-                      <p className="text-destructive text-sm mt-1">{error}</p>
-                    )}
+                  {error[service.productId] && (
+                    <p className="text-destructive text-sm mt-1">
+                      {error[service.productId]}
+                    </p>
+                  )}
                 </td>
                 <td>
-                  <button type="button" className="px-1.5"><CircleX className="hover:bg-red-600 rounded-2xl" onClick={()=>handleDelete(service.productId)} /></button>
+                  <button type="button" className="px-1.5">
+                    <CircleX
+                      className="hover:bg-red-600 rounded-2xl"
+                      onClick={() => handleDelete(service.productId)}
+                    />
+                  </button>
                 </td>
               </tr>
             ))}
