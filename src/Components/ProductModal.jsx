@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { X, Plus } from "lucide-react";
 import { PostProducts, UpdateProducts } from "../Hooks/useProducts";
 import { useSelector, useDispatch } from "react-redux";
@@ -95,10 +95,21 @@ const ProductModal = ({ categories }) => {
   }
 
   const handleChange = (field, value) => {
+
+    if ((field == "isServiceProduct")&& value == false){
+    setFormData((prev) => {
+      const updated = { ...prev, "usesPerUnit": 0 };
+      return updated;
+    });      
+    }
+
     setFormData((prev) => {
       const updated = { ...prev, [field]: value };
       return updated;
     });
+
+    console.log(formData);
+    
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: "" }));
     }
@@ -231,6 +242,7 @@ const ProductModal = ({ categories }) => {
               <input
                 type="number"
                 min="0"
+                disabled={!formData.isServiceProduct}
                 value={formData.usesPerUnit}
                 onChange={(e) =>
                   handleChange("usesPerUnit", parseInt(e.target.value) || 0)
