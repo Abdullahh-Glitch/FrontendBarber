@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { X, Plus } from "lucide-react";
+import { X, Plus, Package, Edit } from "lucide-react";
 import { PostProducts, UpdateProducts } from "../Hooks/useProducts";
 import { useSelector, useDispatch } from "react-redux";
-import { closeProductModal,openProductCategoryModal} from "../Features/productSlice";
+import { closeProductModal, openProductCategoryModal, openOpeningProductStockModel } from "../Features/productSlice";
 import CategoryModel from "../Components/CategoryModal";
 import { validateForm } from "../Handlers/productHandler";
 
@@ -11,18 +11,22 @@ const ProductModal = ({ categories }) => {
   const { mutateAsync: saveProduct, isPending: isSavePending } = PostProducts();
   const { mutateAsync: EditProducts, isPending: isEditPending } = UpdateProducts();
 
-
   const product = useSelector((state) => state.products.selectedProduct);
-  const isEdit = (product !== null);
+  const isEdit = useSelector((state) => state.products.isEditProductModal);
   const openCategoryModel = useSelector((state) => state.products.isProductCategoryModal);
   
-  const handleOpenCategoryModal = ()=>{
+  const handleOpenCategoryModal = () => {
     dispatch(openProductCategoryModal());
-  }
-  
+  };
+
+  const handleAddOpeningStock = () => {
+    if (!validateForm(formData, setErrors)) return;
+    dispatch(openOpeningProductStockModel({product : formData}));
+  };
+
   const onClose = () => {
     dispatch(closeProductModal());
-  }
+  };
 
   const [formData, setFormData] = useState({
     name: "",
@@ -30,8 +34,8 @@ const ProductModal = ({ categories }) => {
     unit: "",
     sku: "",
     usesPerUnit: 0,
-    currentStock: 0,
     minStock: 0,
+    salesPrice: 0,
     isServiceProduct: false,
   });
 
@@ -43,8 +47,8 @@ const ProductModal = ({ categories }) => {
       unit: "",
       sku: "",
       usesPerUnit: 0,
-      currentStock: 0,
       minStock: 0,
+      salesPrice: 0,
       isServiceProduct: false,
     });
   };
@@ -55,15 +59,15 @@ const ProductModal = ({ categories }) => {
   useEffect(() => {
     if (product) {
       setId(product.id);
-    setFormData({
-      name: product.name || "",
-      categoryId: product.categoryId || 0,
-      sku: product.sku || "",
-      unit: product.unit || "",
-      usesPerUnit: product.usesPerUnit || 0,
-      currentStock: product.currentStock || 0,
-      minStock: product.minStock || 0,
-      isServiceProduct: product.isServiceProduct ?? false,
+      setFormData({
+        name: product.name || "",
+        categoryId: product.categoryId || 0,
+        sku: product.sku || "",
+        unit: product.unit || "",
+        usesPerUnit: product.usesPerUnit || 0,
+        minStock: product.minStock || 0,
+        salesPrice: product.salesPrice || 0,
+        isServiceProduct: product.isServiceProduct ?? false,
       });
     }
   }, [product]);
@@ -71,13 +75,16 @@ const ProductModal = ({ categories }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
-    if (!validateForm(formData,setErrors)) {console.log(errors); return;
-    };
+    if (!validateForm(formData, setErrors)) {
+      console.log(errors);
+      return;
+    }
     console.log("validation passed");
-    
 
-    if (!product) {
-      saveProduct(formData, {
+    if (!isEdit) {
+      console.log(formData);
+      
+      saveProduct({product : formData, stock : null}, {
         onSuccess: () => {
           clearForm();
         },
@@ -86,21 +93,30 @@ const ProductModal = ({ categories }) => {
         },
       });
     }
-    if (product) {
-        EditProducts({ productId: id, product: formData },{
-          onSuccess : ()=>{clearForm();},
-          onError: (error) => {console.log("SERVER ERROR:", error.response?.data);}
-        });
-    };
-  }
+
+    if (isEdit) {
+      console.log(id, formData);
+      
+      EditProducts(
+        { productId: id, product: formData },
+        {
+          onSuccess: () => {
+            clearForm();
+          },
+          onError: (error) => {
+            console.log("SERVER ERROR:", error.response?.data);
+          },
+        },
+      );
+    }
+  };
 
   const handleChange = (field, value) => {
-
-    if ((field == "isServiceProduct")&& value == false){
-    setFormData((prev) => {
-      const updated = { ...prev, "usesPerUnit": 0 };
-      return updated;
-    });      
+    if (field == "isServiceProduct" && value == false) {
+      setFormData((prev) => {
+        const updated = { ...prev, usesPerUnit: 0 };
+        return updated;
+      });
     }
 
     setFormData((prev) => {
@@ -108,12 +124,19 @@ const ProductModal = ({ categories }) => {
       return updated;
     });
 
-    console.log(formData);
-    
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: "" }));
     }
   };
+
+    const handleBlur = () =>{
+    if (formData.salesPrice !== "") {
+    setFormData((prev) => ({
+      ...prev,
+      salesPrice: Number(prev.salesPrice).toFixed(2)
+    }));
+  }
+  }
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center mt-5 z-50">
@@ -186,7 +209,7 @@ const ProductModal = ({ categories }) => {
                 <Plus className="h-4 w-4" />
                 Add
               </button>
-              {openCategoryModel && ( <CategoryModel/> )}
+              {openCategoryModel && <CategoryModel />}
             </div>
             {errors.categoryId && (
               <p className="text-destructive text-sm mt-1">
@@ -260,28 +283,6 @@ const ProductModal = ({ categories }) => {
 
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
-                Current Stock *
-              </label>
-              <input
-                type="number"
-                min="0"
-                value={formData.currentStock}
-                onChange={(e) =>
-                  handleChange("currentStock", parseInt(e.target.value) || 0)
-                }
-                className={`w-full px-3 py-2 border rounded-lg bg-background text-foreground ${
-                  errors.currentStock ? "border-destructive" : "border-border"
-                } focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
-              />
-              {errors.currentStock && (
-                <p className="text-destructive text-sm mt-1">
-                  {errors.currentStock}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
                 Minimum Stock *
               </label>
               <input
@@ -301,6 +302,44 @@ const ProductModal = ({ categories }) => {
                 </p>
               )}
             </div>
+
+            {/* Add Opening Stock Button */}
+            {!isEdit && (
+              <div>
+                <button
+                  type="button"
+                  onClick={handleAddOpeningStock}
+                  className="w-full px-2 mt-6.5 py-2 border-2 border-border bg-[#262626] text-[#d4d4d4] text-foreground rounded-xl hover:border-primary hover:bg-[#475569] transition-all duration-200 font-medium cursor-pointer flex items-center justify-center gap-2 group"
+                >
+                  <Package className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                  <span className="group-hover:text-primary transition-colors">
+                    Add Opening Stock
+                  </span>
+                </button>
+              </div>
+            )}
+
+            {isEdit && (<div className="flex items-center justify-center h-full">
+              <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Sales Price *
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                value={formData.salesPrice}
+                onChange={(e) => handleChange("salesPrice", e.target.value)}
+                onBlur={() => handleBlur()}
+                className={`w-full px-3 py-2 border rounded-lg bg-background text-foreground ${
+                  errors.salesPrice ? "border-destructive" : "border-border"
+                } focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
+              />
+              {errors.salesPrice && (
+                <p className="text-destructive text-sm mt-1">{errors.salesPrice}</p>
+              )}
+            </div>
+            </div>)}
+
           </div>
 
           {/* Is Active Toggle */}
@@ -350,10 +389,10 @@ const ProductModal = ({ categories }) => {
               {isSavePending
                 ? "Saving..."
                 : isEditPending
-                ? "Updating..."
-                : isEdit
-                ? "Update Product"
-                : "Add Product"}
+                  ? "Updating..."
+                  : isEdit
+                    ? "Update Product"
+                    : "Add Product"}
             </button>
           </div>
         </form>

@@ -1,11 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { X } from "lucide-react";
 import { GetProducts } from "../Hooks/useProducts";
-import {
-  PostServices,
-  GetServiceProductsByServiceId,
-  UpdateServiceAndProducts,
-} from "../Hooks/useServices";
+import { PostServices, GetServiceProductsByServiceId, UpdateServiceAndProducts } from "../Hooks/useServices";
 import { useSelector, useDispatch } from "react-redux";
 import { closeServiceProductModal, openServiceModal } from "../Features/serviceSlice";
 import ServiceProductModelTable from "./ServiceProductModelTable";
@@ -52,7 +48,8 @@ const ServiceProductModel = () => {
   }, [isEdit, serviceProductData, productData]);
 
   const computedProducts = useMemo(() => {
-    return selectedProducts.map((p) => ({
+    return selectedProducts.map((p) => (
+    {
       ...p,
       qtyRequired: Math.floor(p.usesCount / p.uses),
       usesPerUnitOverride: p.usesCount % p.uses,
@@ -97,23 +94,23 @@ const ServiceProductModel = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-  const newErrors = {};
-let hasError = false;
+    const newErrors = {};
+    let hasError = false;
 
-selectedProducts.forEach((p) => {
-  const err = validateUsesCount(p.usesCount);
-  if (err) {
-    hasError = true;
-    newErrors[p.productId] = err; // store the actual message
-  }
-});
-console.log(newErrors);
+    selectedProducts.forEach((p) => {
+      const err = validateUsesCount(p.usesCount);
+      if (err) {
+        hasError = true;
+        newErrors[p.productId] = err; // store the actual message
+      }
+    });
+    console.log(newErrors);
 
 
-if (hasError) {
-  setError(newErrors); // update state once
-  return; // stop submission
-}
+    if (hasError) {
+      setError(newErrors); // update state once
+      return; // stop submission
+    }
 
     const productsPayload = computedProducts.map(
       ({ name, uses, usesCount, ...rest }) => ({

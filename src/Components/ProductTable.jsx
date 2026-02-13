@@ -1,6 +1,6 @@
-import { Edit, Trash2 } from 'lucide-react';
+import { Edit, Trash2, LayersPlus } from 'lucide-react';
 import { useDispatch } from 'react-redux';
-import { openProductModal, setSelectedProduct, openConfirmDialog } from '../Features/productSlice';
+import { openEditProductModal, setSelectedProduct, openConfirmDialog, openOpeningProductStockModel } from '../Features/productSlice';
 import Loader from "./Loader";
 
 const ProductTable = ({ products, categories, isLoading }) => {
@@ -12,12 +12,15 @@ const ProductTable = ({ products, categories, isLoading }) => {
   };
 
   const onEdit = (product)=>{
-    dispatch(openProductModal());
-    dispatch(setSelectedProduct(product))
+    dispatch(openEditProductModal({product : product, id : product.id}));
   }
 
   const onDelete = (id)=>{
-    dispatch(openConfirmDialog(id));
+    dispatch(openConfirmDialog({id : id}));
+  }
+
+  const onOpeningStock = (id)=>{
+    dispatch(openOpeningProductStockModel({id : id}));
   }
 
   if (isLoading) {
@@ -101,7 +104,7 @@ const ProductTable = ({ products, categories, isLoading }) => {
                 <td className="py-1 whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm text-foreground text-center">
                   {product.usesPerUnit}
                 </td>
-                <td className={`px-3 py-1 whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm font-mono ${product.currentStock <= product.minStock ? 'text-destructive font-bold bg-[#f43f5e]' : 'text-foreground'}`}>
+                <td className={`px-3 py-1 whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm font-mono `}>
                   <div className="text-sm text-foreground">
                     Current: <span className="font-medium">{product.currentStock}</span>
                   </div>
@@ -112,8 +115,15 @@ const ProductTable = ({ products, categories, isLoading }) => {
                 <td className="px-3 py-1 whitespace-nowrap border-r border-[var(--border-color)] border-border text-right text-sm font-medium">
                   <div className="flex items-center justify-end space-x-2">
                     <button
+                    onClick={() => onOpeningStock(product.id)}
+                    className="text-muted-foreground hover:text-primary p-2 rounded-lg hover:bg-blue-500 transition-all duration-100 hover:scale-105"
+                    title='Opening Stock'
+                    disabled={product.currentStock > 0}>
+                      <LayersPlus className="h-4 w-4" />
+                    </button>
+                    <button
                       onClick={() => onEdit(product)}
-                      className="text-muted-foreground hover:text-primary p-2 rounded-lg hover:bg-blue-500 transition-all duration-100 hover:scale-105"
+                      className="text-muted-foreground hover:text-primary p-2 rounded-lg hover:bg-yellow-400 transition-all duration-100 hover:scale-105"
                       title="Edit Product"
                     >
                       <Edit className="h-4 w-4" onClick={() => onEdit(product)} />

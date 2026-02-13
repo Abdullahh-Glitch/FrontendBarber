@@ -38,10 +38,10 @@ export const validateForm = (formData, setErrors) => {
     errors.usesPerUnit = "Uses cannot be negative";
 
   // Current Stock
-  if (!isOnlyNumber(formData.currentStock))
-    errors.currentStock = "Current stock must be a valid number";
-  else if (formData.currentStock < 0)
-    errors.currentStock = "Current stock cannot be negative";
+  // if (!isOnlyNumber(formData.currentStock))
+  //   errors.currentStock = "Current stock must be a valid number";
+  // else if (formData.currentStock < 0)
+  //   errors.currentStock = "Current stock cannot be negative";
 
   // Min Stock
   if (!isOnlyNumber(formData.minStock))

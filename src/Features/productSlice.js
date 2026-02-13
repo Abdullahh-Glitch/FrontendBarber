@@ -1,13 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
+import OpeningProductStockModel from "../Components/OpeningProductStockModel";
 
 const initialState = {
     isProductModal: false,
+    isEditProductModal: false,
     isProductCategoryModal: false,
     isConfirmDialog: false,
+    isOpeningProductStockModel: false,
 
+    tempMode : null,
     selectedProduct: null,
     selectedCategory: null,
     selectedProductId: null,
+    selectedStockDetail: null,
 };
 
 const productSlice = createSlice({
@@ -16,10 +21,36 @@ const productSlice = createSlice({
     reducers: {
         openProductModal: (state) => {
             state.isProductModal = true;
+            state.isEditProductModal = false;
+            state.isOpeningProductStockModel = false;
+        },
+        openEditProductModal: (state, action) => {
+            state.isEditProductModal = true;
+            state.isProductModal = false;
+            state.isOpeningProductStockModel = false;
+            state.selectedProductId = action.payload.id;
+            state.selectedProduct = action.payload.product;
         },
         closeProductModal: (state) => {
             state.isProductModal = false;
+            state.isEditProductModal = false;
+            state.isOpeningProductStockModel = false;
+            state.selectedProductId = null;
             state.selectedProduct = null;
+        },
+
+        openOpeningProductStockModel: (state, action) => {
+            state.isOpeningProductStockModel = true;
+            state.isProductModal = false;
+            state.isEditProductModal = false;
+            
+            state.selectedProductId = action.payload.id || null;
+            state.selectedProduct = action.payload.product || null;
+        },
+
+        closeOpeningProductStockModel: (state) => {
+            state.isOpeningProductStockModel = false;
+            state.isProductModal = false;
         },
 
         openProductCategoryModal: (state) => {
@@ -29,9 +60,11 @@ const productSlice = createSlice({
             state.isProductCategoryModal = false;
             state.selectedCategory = null;
         },
-
         setSelectedProduct: (state, action) => {
             state.selectedProduct = action.payload;
+        },
+        setSelectedProductId: (state, action) => {
+            state.selectedProductId = action.payload;
         },
 
         setSelectedCategory: (state, action) => {
@@ -52,7 +85,11 @@ export const {
     openProductModal,
     closeProductModal,
     openProductCategoryModal,
+    openOpeningProductStockModel,
+    closeOpeningProductStockModel,
     closeProductCategoryModal,
+    setSelectedProductId,
+    openEditProductModal,
     setSelectedProduct,
     setSelectedCategory,
     openConfirmDialog,

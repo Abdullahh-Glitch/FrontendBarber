@@ -78,7 +78,7 @@ const ProductModal = () => {
       console.log(id);
       
         editAccount({ accountId: id, account: formData },{
-          onSuccess : ()=>{clearForm();},
+          onSuccess : ()=> onClose(),
           onError: (error) => {console.log("SERVER ERROR:", error.response?.data);}
         });
     };

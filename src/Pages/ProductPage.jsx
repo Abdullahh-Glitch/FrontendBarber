@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { openProductModal, closeConfirmDialog } from "../Features/productSlice";
 import ProductTable from "../Components/ProductTable";
 import ProductModal from "../Components/ProductModal";
+import OpeningProductStockModel from "../Components/OpeningProductStockModel";
 import ConfirmDialog from "../Components/ConfirmDialog";
 
 export default function ProductPage() {
@@ -18,7 +19,9 @@ export default function ProductPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const prdId = useSelector((state)=>state.products.selectedProductId);
   const productModelState = useSelector((state) => state.products.isProductModal);
+  const editProductModelState = useSelector((state) => state.products.isEditProductModal);
   const confirmDialog = useSelector((state) => state.products.isConfirmDialog);
+  const openingProductStockModelState  = useSelector((state) => state.products.isOpeningProductStockModel)
   const [filteredProducts, setFilteredProducts] = useState(productData || []);
 
   useEffect(() => {
@@ -72,7 +75,8 @@ const onCancel = () => {
         </div>
       </div>
       {/* main */}
-      <div>{productModelState && (<ProductModal categories={categories}/>)}</div>
+      <div>{productModelState || editProductModelState ? (<ProductModal categories={categories}/>) : ""}</div>
+      <div>{openingProductStockModelState && (<OpeningProductStockModel />)}</div>
       <div>{confirmDialog && (<ConfirmDialog onConfirm={()=>onConfirm()} onCancel={()=>onCancel()} isPending={deletePending} />)}</div>
       <div className="h-[75%] w-full flex justify-center text-[var(--text-color)]">
         <div className="w-[98%] h-[100%] flex flex-col border border-[var(--border-color)] rounded-[30px] bg-gradient-to-b from-[var(--main--from)] to-[var(--main--to)] shadow-[var(--shadow-color)] p-6">

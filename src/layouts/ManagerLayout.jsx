@@ -5,6 +5,7 @@ import ManagerHomePage from "../Pages/ManagerHomePage";
 import ProductPage from "../Pages/ProductPage";
 import ServicesPage from "../Pages/ServicesPage";
 import AccountsPage from "../Pages/AccountsPage";
+import SalesPage from "../Pages/SalesPage";
 
 export default function ManagerLayout() {
 
@@ -18,7 +19,7 @@ export default function ManagerLayout() {
           <Route path="accounts" element={<AccountsPage />} />
           <Route path="products" element={<ProductPage />} />
           <Route path="services" element={<ServicesPage />} />
-          <Route path="sales" element={<h1>Sales Page</h1>} />
+          <Route path="sales" element={<SalesPage />} />
         </Routes>
       </main>
     </div>
