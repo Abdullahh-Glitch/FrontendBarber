@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginPage from "./Pages/LoginPage";
-import SalesPage from "./Pages/SalesPage";
+import PurchaseInvoicePage from "./Pages/PurchaseInvoicePage";
 import ManagerLayout from "./layouts/ManagerLayout";
 import { PrivateRoute } from "./Components/PrivateRoutes";
 import UnauthorizedPage from "./Pages/UnauthorizedPage";
@@ -19,10 +19,10 @@ export default function App() {
           element={<LoginPage/>}
         />
         <Route
-          path="/sales"
+          path="/purchase"
           element={
             <PrivateRoute auth={auth} role={role} allowedRoles={[1]}>
-              <SalesPage />
+              <PurchaseInvoicePage />
             </PrivateRoute>
           }
         />
