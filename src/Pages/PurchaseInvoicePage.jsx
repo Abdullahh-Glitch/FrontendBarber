@@ -2,12 +2,21 @@ import { useState, useMemo, useEffect } from 'react';
 import SupplierDetails from '../Components/InvoiceAccountDetailModel';
 import ItemDetails from '../Components/InvoiceProductTableModel';
 import { GetProductForSearch } from '../Hooks/useProducts';
+// import { handleSavePurchaseInvoice } from '../Handlers/invoiceHandler';
+import { useSelector } from 'react-redux';
+import { CreateInvoice } from "../Hooks/useInvoice";
 
 function PurchaseInvoicePage() {
-  // =========================
-  // STATE
-  // =========================
+
+  const { mutateAsync: createInvoice } = CreateInvoice();
+  
   const [items, setItems] = useState([]);
+  const [paidAmount, setPaidAmount] = useState(0);
+  const [fare, setFare] = useState(0);
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const accountId = useSelector((state) => state.invoice.accountId);
+  const invoiceCategoryId = useSelector((state) => state.invoice.selectedCategoryId);
+
   const [name, setName] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [got, setGot] = useState(false);
@@ -18,7 +27,7 @@ function PurchaseInvoicePage() {
     if (gotData?.length > 0 && !got && name.trim() !== "") {
       setFilteredData(gotData);
     }
-  }, [gotData,name]);
+  }, [gotData,name,got]);
 
   const onSearchProduct = (e) => {
     setName(e.target.value);
@@ -34,68 +43,95 @@ function PurchaseInvoicePage() {
     const selectProduct = {
       productId : product?.id,
       name : product?.name,
-      piece : 0,
-      qty : 1,
-      totalPiece : 1,
-      price : product?.salesPrice
+      pieces : 0,
+      boxes : 1,
+      totalPieces : 1,
+      price : 0,
     }
     setItems([...items, selectProduct]);
     setFilteredData([]);
     setName("");
     setGot(true);
+    
   }
 
-  // =========================
-  // CALCULATIONS
-  // =========================
   const totals = useMemo(() => {
     const subtotal = items.reduce(
       (acc, item) =>
-        acc + Number(item.qty || 0) * Number(item.price || 0),
+        acc + (Number(item.totalAmount) || 0),
       0
     );
 
-    const tax = subtotal * 0.10;
-    const grandTotal = subtotal + tax;
+    const fareAmount = Number(fare) || 0;
+    const extraPrice = items.length > 0 ? (fareAmount / items.length) : 0;
+    const grandTotal = subtotal + fareAmount;
+    const paid = Number(paidAmount) || 0;
+    const balance = grandTotal - paid;
+    
 
-    return { subtotal, tax, grandTotal };
-  }, [items]);
+    return { subtotal, paid, balance, grandTotal,extraPrice };
+  }, [items, paidAmount, fare]);
 
-  // =========================
-  // HANDLERS
-  // =========================
   const handleUpdateItem = (index, field, value) => {
     const updatedItems = [...items];
     updatedItems[index][field] = value;
+    updatedItems[index].totalAmount = handleCalTotal(updatedItems[index]);
     setItems(updatedItems);
   };
-
-  const handleAddSpace = () => {
-  const newItem = {
-    id: Date.now(),
-    name: "",
-    piece: 1,
-    qty: 1,
-    totalPiece: 1,
-    price: 0,
-    productId: null
-  };
-  setItems([...items, newItem]);
-};
 
   const handleDeleteItem = (index) => {
     setItems(items.filter((_, i) => i !== index));
   };
 
-  // =========================
-  // UI
-  // =========================
+  const handleCalTotal = (item)=>{
+    return ( (Number(item.boxes || 1) * Number(item.price || 0)) + ((Number(item.price || 0) / Number(item.totalPieces || 1)) * Number(item.pieces || 0)) ).toFixed(2)
+  }
+
+  const handleSave = () => {
+    const invoiceData = {
+      invoiceCategoryId : invoiceCategoryId,
+      eDate : date,
+      accountId : accountId,
+      subTotal : Number(totals.subtotal || 0).toFixed(2),
+      fare : Number(fare || 0).toFixed(2),
+      totalDiscount : Number(0).toFixed(2),
+      grandTotal : Number(totals.grandTotal || 0).toFixed(2),
+      paidAmount : Number(paidAmount || 0).toFixed(2),
+      balance : Number(totals.balance || 0).toFixed(2),
+    };
+    const productData = items.map((item) => (item.productId && (item.boxes > 0 || item.piece > 0) && item.price > 0 ? {
+      sr : items.indexOf(item) + 1,
+      productId : item.productId,
+      pieces : Number(item.pieces).toFixed(2),
+      boxes : Number(item.boxes).toFixed(2),
+      totalPieces : Number(item.totalPieces).toFixed(2),
+      pricePerBox : Number(item.price).toFixed(2),
+      qty : (Number(item.boxes) * Number(item.totalPieces)) + Number(item.pieces),
+      pricePerUnitO : Number(Number(item.price) / Number(item.totalPieces)).toFixed(2),
+      totalAmount : Number(item.totalAmount || 0).toFixed(2),
+      pricePerUnitC : Number(Number(Number(item.totalAmount || 0) + Number(totals.extraPrice || 0)) / Number((Number(item.boxes) * Number(item.totalPieces)) + Number(item.pieces))).toFixed(2),
+    } : null
+  ));
+  
+    
+  createInvoice({invoiceData : invoiceData, productData : productData}, {
+        onSuccess: () => {
+            console.log(productData);
+            
+            console.log("Invoice Created");
+            
+        },
+        onError: (error) => {
+          console.log("SERVER ERROR:", error.response?.data);
+        },
+      });
+  }
+
   return (
     <div className="md:h-[90vh] h-screen bg-slate-100 pt-2 px-3 md:px-6 lg:px-8 font-sans overflow-x-auto w-[100%] mx-auto">
       
       <div className="w-[80%] h-[90vh] max-w-full md:max-w-[full] mx-auto bg-white rounded-3xl shadow-xl overflow-auto">
         
-        {/* ================= HEADER ================= */}
         <header className="bg-[#1a233a] w-[100%] h-[20%] p-6 md:p-10 text-white flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
 
           <div>
@@ -126,6 +162,8 @@ function PurchaseInvoicePage() {
               </label>
               <input
                 type="date"
+                value={date}
+                onChange={(e)=>setDate(e.target.value)}
                 className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-center text-sm focus:ring-1 focus:ring-blue-500 outline-none"
               />
             </div>
@@ -206,41 +244,81 @@ function PurchaseInvoicePage() {
             <ItemDetails
               items={items}
               onUpdate={handleUpdateItem}
-              getSpace={handleAddSpace}
               onDelete={handleDeleteItem}
               />
               </div>
           </div>
 
           {/* ================= TOTALS ================= */}
-          <section className="flex flex-col items-end mt-12 pt-8 border-t-2 border-slate-50">
+          <section className="flex w-full flex-col items-end mt-12 pt-8 border-t-2 border-slate-50">
 
-            <div className="w-full md:w-80 space-y-3">
+            <div className="w-full md:w-[50%] space-y-2">
 
-              <div className="flex justify-between text-slate-500">
-                <span className="font-medium">Subtotal:</span>
-                <span className="font-bold">
-                  ${totals.subtotal.toFixed(2)}
+              <div className="flex w-full text-slate-500">
+                <span className="font-medium w-[50%]">Subtotal:</span>
+                <span className="font-bold mx-auto">
+                  <input
+                    type="text"
+                    value={totals.subtotal.toFixed(2)}
+                    disabled
+                    className="w-[100%] px-4 py-2 pr-10 border rounded-xl bg-card text-foreground text-right focus:outline-none focus:ring-2"
+                    placeholder="subTotal"
+                  />
                 </span>
               </div>
 
-              <div className="flex justify-between text-slate-500">
-                <span className="font-medium">Tax (10%):</span>
-                <span className="font-bold">
-                  ${totals.tax.toFixed(2)}
+              <div className="flex w-full text-slate-500">
+                <span className="font-medium w-[50%]">Fare:</span>
+                <span className="font-bold mx-auto">
+                  <input
+                    type="number"
+                    min={0}
+                    value={fare}
+                    onChange={(e) => setFare(e.target.value)}
+                    className="w-[100%] px-4 py-2 pr-10 border rounded-xl bg-card text-foreground text-right focus:outline-none focus:ring-2 placeholder:text-left"
+                    placeholder="Fare"
+                  />
+                </span>
+              </div>
+
+              <div className="flex w-full text-slate-500">
+                <span className="font-medium w-[50%]">Grand Total:</span>
+                <span className="font-bold mx-auto">
+                  <input
+                    type="text"
+                    value={totals.grandTotal.toFixed(2)}
+                    disabled
+                    className="w-[100%] px-4 py-2 pr-10 border rounded-xl bg-card text-foreground text-right focus:outline-none focus:ring-2"
+                    placeholder="Grand Total"
+                  />
+                </span>
+              </div>
+
+              <div className="flex w-full text-slate-500">
+                <span className="font-medium w-[50%]">Paid Amount:</span>
+                <span className="font-bold mx-auto">
+                  <input
+                    type="number"
+                    min={0}
+                    value={paidAmount}
+                    onChange={(e) => setPaidAmount(e.target.value)}
+                    className="w-[100%] px-4 py-2 pr-10 border rounded-xl bg-card text-foreground text-right focus:outline-none focus:ring-2 placeholder:text-left"
+                    placeholder="Paid Amount"
+                  />
                 </span>
               </div>
 
               <div className="flex justify-between text-2xl font-black text-slate-800 pt-4 border-t border-slate-100">
-                <span>Grand Total:</span>
+                <span>Balance:</span>
                 <span className="text-blue-600">
-                  ${totals.grandTotal.toFixed(2)}
+                  Rs.{totals.balance.toFixed(2)}
                 </span>
               </div>
 
               <button
                 className="w-full mt-8 bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-bold shadow-lg shadow-blue-200 transition-all flex justify-center items-center gap-2 active:scale-95"
-                onClick={() => window.print()}
+                // onClick={() => window.print()}
+                onClick={() => handleSave()}
               >
                 💾 Save & Download Invoice
               </button>

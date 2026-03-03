@@ -1,13 +1,22 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setInvoiceCategoryId } from "../Features/invoiceSlice";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const btns = useSelector((state) => state.navbar.managerbtn);
+  const dispatch = useDispatch();
 
   const handleToggle=()=>{
     document.documentElement.classList.toggle('dark');
+  }
+  
+  const handleClick = (categoryId) => {
+    
+    if(categoryId !== undefined){
+      dispatch(setInvoiceCategoryId(categoryId));
+    }
   }
 
   return (
@@ -27,13 +36,14 @@ export default function Navbar() {
             <li key={index}>
               <Link
                 to={btn.page}
+                onClick={() => handleClick(btn.categoryId)}
                 className="hover:text-yellow-400 duration-200 cursor-pointer"
               >
                 {btn.name}
               </Link>
             </li>
           ))}
-          <li><button onClick={handleToggle}>toggle</button></li>
+          <li><button className="hover:text-yellow-400 duration-200 cursor-pointer" onClick={handleToggle}>toggle</button></li>
         </ul>
 
         {/* Mobile Hamburger */}
@@ -62,7 +72,7 @@ export default function Navbar() {
             <li key={index}>
               <Link
                 to={btn.page}
-                onClick={() => setOpen(false)}
+                onClick={() => {handleClick(btn.categoryId); setOpen(false)}}
                 className="hover:text-yellow-400 duration-200"
               >
                 {btn.name}

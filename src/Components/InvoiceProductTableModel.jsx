@@ -4,33 +4,38 @@ const InvoiceProductTableModel = ({ items, onUpdate, onDelete }) => {
 
   return (
     <div className="w-full">
-      <div className="w-full overflow-x-hidden rounded-xl border border-slate-200">
-        <table className="w-full table-fixed text-left border-collapse bg-white">
+      <div className="w-full overflow-x-auto rounded-xl border border-slate-200">
+        <table className="w-full table-fixed text-left border-collapse bg-white overflow-x-auto">
           
           <thead>
             <tr className="bg-slate-50 text-slate-600 text-xs uppercase tracking-wider">
-              <th className="p-3 font-semibold">Product Name</th>
-              <th className="p-3 font-semibold text-center">Pieces</th>
-              <th className="p-3 font-semibold text-center">Qty</th>
-              <th className="p-3 font-semibold text-center">Total Pieces</th>
-              <th className="p-3 font-semibold text-center">Price</th>
-              <th className="p-3 font-semibold text-right">Total</th>
+              <th className="p-3 w-[5%] font-bold">Sr.</th>
+              <th className="p-3 font-bold">Product Name</th>
+              <th className="p-3 w-[13%] font-bold text-center">Pieces</th>
+              <th className="p-3 w-[10%] font-bold text-center">Boxes</th>
+              <th className="p-3 w-[12%] font-bold text-center">Total Pieces</th>
+              <th className="p-3 w-[14%] font-bold text-center">Price/Box</th>
+              <th className="p-3 w-[13%] font-bold text-right">Total</th>
               <th className="p-3 w-12"></th>
             </tr>
           </thead>
 
           <tbody className="divide-y divide-slate-100">
             {items?.map((item, index) => (
-              <tr key={item.id} className={`relative hover:bg-slate-50 transition ${item.currentStock === 0 ? "bg-red-50" : ""}`}>
+              <tr key={index} className={`relative w-full hover:bg-slate-50 transition ${item.currentStock === 0 ? "bg-red-50" : ""}`}>
+
+                <td className="p-3 font-semibold">
+                  {index + 1}
+                </td>
 
                 {/* PRODUCT NAME */}
-                <td className="p-3 relative">
+                <td className="px-3 border relative">
                   <input
                     type="text"
                     disabled={true}
                     value={item.name}
                     placeholder="Search product..."
-                    className="w-full bg-transparent focus:outline-none focus:text-blue-600"
+                    className="w-full font-bold bg-transparent focus:outline-none focus:text-blue-600"
                   />
                 </td>
 
@@ -39,9 +44,10 @@ const InvoiceProductTableModel = ({ items, onUpdate, onDelete }) => {
                   <input
                     type="number"
                     min={0}
-                    value={item.piece}
-                    onChange={(e) => onUpdate(index, "piece", e.target.value)}
-                    className="w-full text-center bg-transparent focus:outline-none"
+                    max={item.totalPieces - 1}
+                    value={item.pieces}
+                    onChange={(e) => onUpdate(index, "pieces", e.target.value)}
+                    className="w-full font-semibold text-center bg-transparent focus:outline-none"
                   />
                 </td>
 
@@ -50,9 +56,9 @@ const InvoiceProductTableModel = ({ items, onUpdate, onDelete }) => {
                   <input
                     type="number"
                     min={0}
-                    value={item.qty}
-                    onChange={(e) => onUpdate(index, "qty", e.target.value)}
-                    className="w-full text-center bg-transparent focus:outline-none"
+                    value={item.boxes}
+                    onChange={(e) => onUpdate(index, "boxes", e.target.value)}
+                    className="w-full font-semibold text-center bg-transparent focus:outline-none"
                   />
                 </td>
 
@@ -61,9 +67,9 @@ const InvoiceProductTableModel = ({ items, onUpdate, onDelete }) => {
                   <input
                     type="number"
                     min={1}
-                    value={item.totalPiece}
-                    onChange={(e) => onUpdate(index, "totalPiece", e.target.value)}
-                    className="w-full text-center bg-transparent focus:outline-none"
+                    value={item.totalPieces}
+                    onChange={(e) => onUpdate(index, "totalPieces", e.target.value)}
+                    className="w-full font-semibold text-center bg-transparent focus:outline-none"
                   />
                 </td>
 
@@ -74,13 +80,13 @@ const InvoiceProductTableModel = ({ items, onUpdate, onDelete }) => {
                     min={0}
                     value={item.price}
                     onChange={(e) => onUpdate(index, "price", e.target.value)}
-                    className="w-full text-center bg-transparent focus:outline-none"
+                    className="w-full font-semibold text-center bg-transparent focus:outline-none"
                   />
                 </td>
 
                 {/* TOTAL */}
-                <td className="p-3 text-right font-semibold">
-                  {( (Number(item.qty || 1) * Number(item.price || 0)) + ((Number(item.price || 0) / Number(item.totalPiece || 1)) * Number(item.piece || 0)) ).toFixed(2)}
+                <td className="p-3 text-right font-bold">
+                  {item.totalAmount}
                 </td>
 
                 {/* DELETE */}

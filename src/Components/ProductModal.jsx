@@ -84,7 +84,7 @@ const ProductModal = ({ categories }) => {
     if (!isEdit) {
       console.log(formData);
       
-      saveProduct({product : formData, stock : null}, {
+      saveProduct({product : formData, stock : null, productId : null}, {
         onSuccess: () => {
           clearForm();
         },
@@ -98,7 +98,7 @@ const ProductModal = ({ categories }) => {
       console.log(id, formData);
       
       EditProducts(
-        { productId: id, product: formData },
+        { product: formData, stock : null, productId: id },
         {
           onSuccess: () => {
             clearForm();

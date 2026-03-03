@@ -21,6 +21,8 @@ const ProductModal = () => {
   const [formData, setFormData] = useState({
     name: "",
     categoryId: 0,
+    companyName: "",
+    address: "",
     mobileNo: "",
     phoneNo: "",
     openingBalance: "0.00",
@@ -35,6 +37,8 @@ const ProductModal = () => {
     setFormData({
     name: "",
     categoryId: 0,
+    companyName: "",
+    address: "",
     mobileNo: "",
     phoneNo: "",
     openingBalance: "0.00",
@@ -48,6 +52,8 @@ const ProductModal = () => {
     setFormData({
       name: account.name || "",
       categoryId: account.categoryId || 0,
+      companyName: account.companyName ||"",
+      address: account.address || "",
       mobileNo: account.mobileNo || "",
       phoneNo: account.phoneNo || "",
       openingBalance: String(account.openingBalance) || "",
@@ -174,8 +180,52 @@ const ProductModal = () => {
             )}
           </div>
 
+          {formData.categoryId === 2 && (
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Company Name *
+              </label>
+              <input
+                type="text"
+                value={formData.companyName}
+                onChange={(e) => handleChange("companyName", e.target.value)}
+                className={`w-full px-4 py-3 border rounded-xl bg-card text-foreground transition-all duration-200 ${
+                  errors.companyName
+                    ? "border-destructive focus:ring-destructive/20"
+                    : "border-border focus:ring-primary/20"
+                } focus:outline-none focus:ring-2 focus:border-primary`}
+                placeholder="Enter Company Name"
+              />
+              {errors.companyName && (
+                <p className="text-destructive text-sm mt-1 text-red-700 font-bold">{errors.companyName}</p>
+              )}
+            </div>
+          )}
+
+          {/* Address */}
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+            <label className="block text-sm font-medium text-foreground ">
+              Address *
+            </label>
+            <div className="flex gap-1">
+              <textarea 
+            placeholder="Enter Address" 
+            rows="2"
+            value={formData.address}
+            onChange={(e) => handleChange("address", e.target.value)}
+            className={`w-full px-3 py-2 border rounded-lg bg-background text-foreground font-mono ${
+                  errors.address ? "border-destructive" : "border-border"
+                } focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}/>
+            </div>
+            {errors.address && (
+              <p className="text-destructive text-sm mt-1 text-red-700 font-bold">
+                {errors.address}
+              </p>
+            )}
+          </div>
+
           {/* Mobile Number */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
                 Mobile Number *
@@ -212,10 +262,8 @@ const ProductModal = () => {
                 <p className="text-destructive text-sm mt-1 text-red-700 font-bold">{errors.phoneNo}</p>
               )}
             </div>
-          </div>
 
-          {/* Current Balance */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Current Balance */}
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
                 Opening Balance *
@@ -238,9 +286,11 @@ const ProductModal = () => {
                 </p>
               )}
             </div>
+          </div>
 
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
             {/* Is Active */}
-            <div className="flex items-end-safe justify-end gap-3 pr-2 pb-3">
+            <div className="flex gap-3 pl-1 pb-3">
                 <label
                 htmlFor="isActive"
                 className="text-sm font-medium text-foreground cursor-pointer"

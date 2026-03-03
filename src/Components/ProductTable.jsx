@@ -1,6 +1,6 @@
 import { Edit, Trash2, LayersPlus } from 'lucide-react';
 import { useDispatch } from 'react-redux';
-import { openEditProductModal, setSelectedProduct, openConfirmDialog, openOpeningProductStockModel } from '../Features/productSlice';
+import { openEditProductModal, openConfirmDialog, openOpeningProductStockModel } from '../Features/productSlice';
 import Loader from "./Loader";
 
 const ProductTable = ({ products, categories, isLoading }) => {

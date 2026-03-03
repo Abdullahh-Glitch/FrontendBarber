@@ -6,7 +6,7 @@ const initialState = {
     { name: "Accounts", page: "/manager/accounts" },
     { name: "Products", page: "/manager/products" },
     { name: "Services", page: "/manager/services" },
-    { name: "Purchase", page: "/manager/purchase" },
+    { name: "Purchase", page: "/manager/purchase", categoryId : 1 },
   ],
     salesmanbtn : [{}],
 };

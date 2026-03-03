@@ -19,6 +19,12 @@ export const validateForm = (formData, setErrors) => {
   else if (hasSpecialChars(formData.name))
     errors.name = "Name cannot contain special characters";
 
+  // Company Name
+  if (formData.categoryId === 2 && !formData.companyName?.trim())
+    errors.companyName = "Company Name is required";
+  else if (hasSpecialChars(formData.companyName))
+    errors.companyName = "Company Name cannot contain special characters";
+
   // Mobile No
   if(hasSpecialChars(formData.mobileNo))
     errors.mobileNo = "Mobile Number cannot contain special characters";

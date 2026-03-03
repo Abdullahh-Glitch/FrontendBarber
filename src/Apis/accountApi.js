@@ -5,6 +5,11 @@ export const getAccounts = async () => {
   return response.data;
 }
 
+export const getSuppliersByName = async (name)=>{
+  const response = await axiosInstance.get(`api/accounts/a/s/${name}`);
+  return response.data;
+}
+
 export const createAccount = async (account) => {
   const response = await axiosInstance.post("/api/accounts/a", account);
   return response.data;

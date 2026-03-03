@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from "react";
-import { X, Plus, Package } from "lucide-react";
+import { useState, useMemo } from "react";
+import { X } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { PostProducts } from "../Hooks/useProducts";
 import { closeProductModal} from "../Features/productSlice";
@@ -12,6 +12,7 @@ const OpeningProductStockModel = () => {
 
   const product = useSelector((state) => state.products.selectedProduct);
   const productId = useSelector((state) => state.products.selectedProductId);
+  
 
   const onClose = () => {
     dispatch(closeProductModal());
@@ -35,14 +36,13 @@ const OpeningProductStockModel = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
     if (validateForm(formData,setErrors)) return;
-    console.log("validation passed");
     
       if (!productId){
-        saveProduct({product : product, stock : formData}, {
+        saveProduct({product : product, stock : formData, productId : null}, {
         onSuccess: () => {
           clearForm();
+          onClose();
         },
         onError: (error) => {
           console.log("SERVER ERROR:", error.response?.data);
@@ -53,6 +53,7 @@ const OpeningProductStockModel = () => {
       saveProduct({product : null, stock : formData,productId : productId}, {
         onSuccess: () => {
           clearForm();
+          onClose();
         },
         onError: (error) => {
           console.log("SERVER ERROR:", error.response?.data);
@@ -191,12 +192,14 @@ const OpeningProductStockModel = () => {
             </button>
             <button
               type="submit"
-              // disabled={isSavePending || isEditPending}
+              disabled={isSavePending}
               className="px-6 py-3 bg-gradient-primary text-primary-foreground rounded-xl hover:shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium cursor-pointer"
             >
-              {product
-                ? "Add Product & Stock"
-                : "Add Stock"
+              {isSavePending 
+              ? "Saving..."
+              : product
+              ? "Add Product & Stock"
+              : "Add Stock"
               }
             </button>
           </div>

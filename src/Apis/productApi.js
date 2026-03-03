@@ -16,14 +16,9 @@ export const getProductForSearch = async (name) => {
 }
 
 export const postProducts = async (data)=>{
-  // console.log("From Api ",product);
   const {product,stock,productId} = data;
-  console.log("Api ", product);
-  console.log("Api ", stock);
-  console.log("Api", productId);
-  
 
-  const response = await axiosInstance.post("/api/products/p", stock && product ? {product,stock} : stock && !product ? {stock,productId} : product );
+  const response = await axiosInstance.post("/api/products/p", {product : product, stock : stock, productId : productId});
   return response.data;
 }
 

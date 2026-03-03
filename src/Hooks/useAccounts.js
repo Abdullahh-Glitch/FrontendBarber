@@ -1,5 +1,5 @@
 import { useMutation, useQuery,useQueryClient } from '@tanstack/react-query';
-import { getAccounts, createAccount, updateAccount, deleteAccount } from '../Apis/accountApi';
+import { getAccounts, getSuppliersByName, createAccount, updateAccount, deleteAccount } from '../Apis/accountApi';
 
 export const GetAccounts = ()=>{
     return useQuery({
@@ -16,6 +16,14 @@ export const  CreateAccount = ()=>{
         onSuccess : ()=>{
             queryClient.invalidateQueries(['accounts/g/a'])
         }
+    })
+}
+
+export const GetSuppliersByName = (name)=>{
+    return useQuery({
+        queryKey : ['accounts/a/s',name],
+        queryFn : ()=>getSuppliersByName(name),
+        enabled : !!name
     })
 }
 

@@ -4,6 +4,7 @@ import authReducer from '../Features/authSlice';
 import navbarReducer from '../Features/navbarSlice';
 import servicesReducer from '../Features/serviceSlice';
 import accountReducer from '../Features/accountSlice';
+import invoiceReducer from '../Features/invoiceSlice';
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     navbar : navbarReducer,
     services : servicesReducer,
     accounts : accountReducer,
+    invoice : invoiceReducer,
   },
 });
 
