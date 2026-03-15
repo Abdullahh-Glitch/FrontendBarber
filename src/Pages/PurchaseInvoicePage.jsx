@@ -16,6 +16,7 @@ function PurchaseInvoicePage() {
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const accountId = useSelector((state) => state.invoice.accountId);
   const invoiceCategoryId = useSelector((state) => state.invoice.selectedCategoryId);
+  const [clearData,setClearData] = useState(false)
 
   const [name, setName] = useState("");
   const [filteredData, setFilteredData] = useState([]);
@@ -87,7 +88,20 @@ function PurchaseInvoicePage() {
     return ( (Number(item.boxes || 1) * Number(item.price || 0)) + ((Number(item.price || 0) / Number(item.totalPieces || 1)) * Number(item.pieces || 0)) ).toFixed(2)
   }
 
+  const clearForm = () =>{
+    setItems([]);
+    setPaidAmount(0);
+    setFare(0);
+    setDate(new Date().toISOString().split("T")[0])
+    setClearData(true);
+  }
+
   const handleSave = () => {
+    if(accountId === null || items.length === 0){
+      alert("Please select an account and add items to the invoice.");
+      return;
+    }
+    
     const invoiceData = {
       invoiceCategoryId : invoiceCategoryId,
       eDate : date,
@@ -99,7 +113,7 @@ function PurchaseInvoicePage() {
       paidAmount : Number(paidAmount || 0).toFixed(2),
       balance : Number(totals.balance || 0).toFixed(2),
     };
-    const productData = items.map((item) => (item.productId && (item.boxes > 0 || item.piece > 0) && item.price > 0 ? {
+    const productData = items.map((item) => (item.productId && (item.boxes > 0 || item.pieces > 0) && item.price > 0 ? {
       sr : items.indexOf(item) + 1,
       productId : item.productId,
       pieces : Number(item.pieces).toFixed(2),
@@ -116,8 +130,7 @@ function PurchaseInvoicePage() {
     
   createInvoice({invoiceData : invoiceData, productData : productData}, {
         onSuccess: () => {
-            console.log(productData);
-            
+            clearForm();
             console.log("Invoice Created");
             
         },
@@ -128,11 +141,11 @@ function PurchaseInvoicePage() {
   }
 
   return (
-    <div className="md:h-[90vh] h-screen bg-slate-100 pt-2 px-3 md:px-6 lg:px-8 font-sans overflow-x-auto w-[100%] mx-auto">
+    <div className="md:h-[90vh] w-[100%] h-screen bg-slate-300 px-3 md:px-6 lg:px-8 font-sans overflow-x-auto mx-auto thin-scrollbar">
       
-      <div className="w-[80%] h-[90vh] max-w-full md:max-w-[full] mx-auto bg-white rounded-3xl shadow-xl overflow-auto">
+      <div className="w-[100%] h-[90vh] max-w-full md:w-[85%] mx-auto bg-white rounded-3xl shadow-xl overflow-auto">
         
-        <header className="bg-[#1a233a] w-[100%] h-[20%] p-6 md:p-10 text-white flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <header className="bg-[#1a233a] w-[100%] h-[20%] p-2 md:p-10 text-white flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
 
           <div>
             <h1 className="text-[15px] md:text-[23px] font-black flex items-center gap-3">
@@ -144,9 +157,9 @@ function PurchaseInvoicePage() {
             </p>
           </div>
 
-          <div className="flex gap-4 w-full md:w-auto">
-            <div className="flex-1 md:flex-none text-right">
-              <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">
+          <div className="flex gap-2 w-full md:w-auto">
+            <div className="flex-1 md:flex-none text-left md:text-right">
+              <label className="block text-[10px] pl-2 md:pr-2 font-bold uppercase tracking-widest text-slate-500 mb-1">
                 Invoice #
               </label>
               <input
@@ -156,8 +169,8 @@ function PurchaseInvoicePage() {
               />
             </div>
 
-            <div className="flex-1 md:flex-none text-right">
-              <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">
+            <div className="flex-1 md:flex-none text-left md:text-right">
+              <label className="block text-[10px] pl-1 md:pr-3 font-bold uppercase tracking-widest text-slate-500 mb-1">
                 Date
               </label>
               <input
@@ -171,12 +184,12 @@ function PurchaseInvoicePage() {
         </header>
 
         {/* ================= MAIN ================= */}
-        <main className="p-6 md:p-12 overflow-x-hidden">
+        <main className="p-5 md:p-8 overflow-x-hidden">
 
           {/* Supplier Section */}
-          <SupplierDetails />
+          <SupplierDetails clearData={clearData} setClearData={setClearData} />
 
-          <div className="my-5 border-t border-slate-100" />
+          <div className="my-2 border-t border-slate-100" />
 
           {/* Items Section */}
           <div className="w-full">
@@ -196,7 +209,7 @@ function PurchaseInvoicePage() {
               type="text"
               value={name}
               onChange={(e) => onSearchProduct(e)}
-              className="w-[100%] px-4 py-3 pr-10 border rounded-xl bg-card text-foreground focus:outline-none focus:ring-2"
+              className="w-[100%] h-[40px] px-4 py-3 pr-10 border rounded-xl bg-card text-foreground focus:outline-none focus:ring-2"
               placeholder="Enter Product Name"
             />
 

@@ -14,12 +14,16 @@ const invoiceSlice = createSlice({
         },
         setInvoiceCategoryId : (state,action) => {
             state.selectedCategoryId = action.payload;
-        }
+        },
+        removeAccountId: (state) => {
+            state.accountId = null;
+        },
     },
 });
 
 export const {
     setAccountId,
     setInvoiceCategoryId,
+    removeAccountId,
 } = invoiceSlice.actions;
 export default invoiceSlice.reducer;

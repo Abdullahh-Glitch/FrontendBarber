@@ -1,9 +1,9 @@
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GetSuppliersByName } from '../Hooks/useAccounts';
 import { useDispatch } from 'react-redux';
-import { setAccountId } from '../Features/invoiceSlice';
+import { setAccountId, removeAccountId } from '../Features/invoiceSlice';
 
-const InvoiceAccountDetailModel = () => {
+const InvoiceAccountDetailModel = ({clearData,setClearData}) => {
 
   const dispatch = useDispatch();
   const [sName,setSName] = useState("");
@@ -19,11 +19,27 @@ const InvoiceAccountDetailModel = () => {
   })
 
   useEffect(() => {
+    return () => {
+      dispatch(removeAccountId());
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
       if (gotData?.length > 0 && !got && sName.trim() !== "") {
         setFilteredData(gotData);
       }
+      if (clearData){
+        setSupplier({
+          name : "",
+          companyName : "",
+          address : "",
+          phoneNo : ""
+        })
+        dispatch(removeAccountId());
+        setClearData(false);
+      }
       
-    }, [gotData,sName,got]);
+    }, [gotData,sName,got,clearData,setClearData,dispatch]);
 
     const onSearchSupplier = (e) => {
     setSName(e.target.value);
@@ -54,12 +70,15 @@ const InvoiceAccountDetailModel = () => {
   return (
     <div className="mb-8 relative w-[100%]">
         {/* <div className="text-lg w-[100%] font-bold text-slate-800 mb-6 flex flex-row gap-2"> */}
-        <div className="w-[100%] text-slate-800 mb-6 flex flex-row gap-2">
-          <div className='w-[30%] font-bold text-2xl'><h2>🏢 Supplier Details</h2></div>
-          <div className='w-[70%] bg-gray-400 pl-1 rounded-lg flex flex-row'>
-            <label htmlFor="" className='w-[30%] font-bold flex justify-center items-center'>Search Suppliers</label>
-            <div className='w-full relative'>
+        <div className="w-[100%] text-slate-800 mb-6 flex gap-2 md:flex-row flex-col">
 
+          <div className='w-[100%] md:w-[30%] font-bold text-2xl'><h2>🏢 Supplier Details</h2></div>
+
+          <div className='w-[100%] md:w-[70%] bg-gray-400 pl-1 rounded-lg flex flex-row'>
+
+            <label htmlFor="" className='w-[30%] pr-2 md:pr-0 font-bold flex justify-center items-center'>Suppliers</label>
+
+          <div className='w-full relative'>
           <input 
             type="text"
             value={sName}
@@ -96,16 +115,16 @@ const InvoiceAccountDetailModel = () => {
                       <table className='w-full'>
                         <thead>
                           <tr>
-                            <th className='w-1/3 text-left'>Name</th>
-                            <th className='w-1/3 text-left'>Company Name</th>
-                            <th className='w-1/3 text-left'>Address</th>
+                            <th className='w-1/3 text-left pl-1 border'>Name</th>
+                            <th className='w-1/3 text-left pl-1 border'>Company</th>
+                            <th className='w-1/3 text-left pl-1 border'>Address</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <td className="py-2 text-left">{account.name}</td>
-                            <td className="py-2 text-left">{account.companyName}</td>
-                            <td className="py-2 text-left">{account.address}</td>
+                          <tr className=''>
+                            <td className="p-2 text-left pl-1 border">{account.name}</td>
+                            <td className="py-2 text-left pl-1 border">{account.companyName}</td>
+                            <td className="py-2 text-left pl-1 border">{account.address}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -126,7 +145,7 @@ const InvoiceAccountDetailModel = () => {
         </div>
           
       {/* Responsive Grid: 1 column on mobile, 2 on desktop */}
-      <div className="w-[100%] grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-4">
+      <div className="w-[100%] grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-1">
         <div className="w-[100%] flex flex-col gap-1.5">
           <label className="text-xs font-semibold pl-1 text-slate-500 uppercase">Name</label>
           <input
@@ -134,7 +153,7 @@ const InvoiceAccountDetailModel = () => {
             placeholder='Name'
             value={supplier.name}
             disabled
-            className="p-3 bg-slate-50 h-[40px] w-[100%] border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all" />
+            className="p-3 bg-slate-50 h-[35px] border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all" />
           
         </div>
         <div className="flex flex-col gap-1.5">
@@ -144,7 +163,7 @@ const InvoiceAccountDetailModel = () => {
             value={supplier.companyName}
             disabled
             placeholder="Company Name" 
-            className="p-3 bg-slate-50 border h-[40px] border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+            className="p-3 bg-slate-50 border h-[35px] border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
           />
         </div>
         <div className="flex flex-col gap-1.5">
@@ -154,7 +173,7 @@ const InvoiceAccountDetailModel = () => {
             value={supplier.phoneNo}
             disabled
             placeholder="Phone Number" 
-            className="p-3 bg-slate-50 h-[40px] border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+            className="p-3 bg-slate-50 h-[35px] border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
           />
         </div>
         <div className="flex flex-col gap-1.5">
@@ -167,7 +186,6 @@ const InvoiceAccountDetailModel = () => {
             className="p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
           />
         </div>
-        
       </div>
     </div>
   );
