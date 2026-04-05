@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useRef} from 'react';
 import { GetSuppliersByName } from '../Hooks/useAccounts';
 import { useDispatch } from 'react-redux';
 import { setAccountId, removeAccountId } from '../Features/invoiceSlice';
 
-const InvoiceAccountDetailModel = ({clearData,setClearData}) => {
+const PurchaseInvoiceAccountDetailModel = ({clearData,setClearData}) => {
 
   const dispatch = useDispatch();
   const [sName,setSName] = useState("");
   const[got,setGot]= useState(false);
   const [filteredData, setFilteredData] = useState([]);
   const { data: gotData } = GetSuppliersByName(sName);
+  const [activeIndex, setActiveIndex] = useState(-1);
+
+  const itemRefs = useRef([]);
 
   const [supplier,setSupplier] = useState({
     name : "",
@@ -41,14 +44,23 @@ const InvoiceAccountDetailModel = ({clearData,setClearData}) => {
       
     }, [gotData,sName,got,clearData,setClearData,dispatch]);
 
-    const onSearchSupplier = (e) => {
-    setSName(e.target.value);
-    setGot(false);
-    if (e.target.value.trim() === "") {
-      setFilteredData([]);
-      return;
-    }
+  useEffect(() => {
+  if (activeIndex >= 0) {
+    itemRefs.current[activeIndex]?.scrollIntoView({
+      behavior: "auto",
+      block: "nearest",
+    });
   }
+}, [activeIndex]);
+
+  const onSearchSupplier = (e) => {
+  setSName(e.target.value);
+  setGot(false);
+  if (e.target.value.trim() === "") {
+    setFilteredData([]);
+    return;
+  }
+}
 
   const onSelectProduct = (account) => {
     if (!account) return;
@@ -67,6 +79,29 @@ const InvoiceAccountDetailModel = ({clearData,setClearData}) => {
     setGot(true);
   }
 
+  const handleKeyDownSearch = (e) => {
+    
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    setActiveIndex((prev) =>
+      prev < filteredData.length - 1 ? prev + 1 : 0
+    );
+  }
+
+  if (e.key === "ArrowUp") {
+    e.preventDefault();
+    setActiveIndex((prev) =>
+      prev > 0 ? prev - 1 : filteredData.length - 1
+    );
+  }
+
+  if (e.key === "Enter" && activeIndex >= 0) {
+    e.preventDefault();
+    onSelectProduct(filteredData[activeIndex]);
+    setActiveIndex(-1);
+  }
+};
+
   return (
     <div className="mb-8 relative w-[100%]">
         {/* <div className="text-lg w-[100%] font-bold text-slate-800 mb-6 flex flex-row gap-2"> */}
@@ -81,6 +116,7 @@ const InvoiceAccountDetailModel = ({clearData,setClearData}) => {
           <div className='w-full relative'>
           <input 
             type="text"
+            onKeyDown={handleKeyDownSearch}
             value={sName}
             onChange={(e)=> onSearchSupplier(e)}
             placeholder=" Search Name" 
@@ -102,17 +138,18 @@ const InvoiceAccountDetailModel = ({clearData,setClearData}) => {
             {sName.trim() &&
               (filteredData.length > 0 ? (
                 <ul className="absolute top-full left-0 z-50 w-full mt-1 border rounded-xl shadow-lg max-h-60 bg-gradient-to-r from-[var(--from-color)] to-[var(--to-color)] text-[var(--text-color)] thin-scrollbar overflow-y-auto">
-                  {filteredData.map((account) => (
+                  {filteredData.map((account,index) => (
                     <li
                       key={account.id}
-                      className="px-4 py-2 cursor-pointer hover:bg-muted"
+                      ref={(el) => (itemRefs.current[index] = el)}
+                      className={`px-4 py-2 cursor-pointer hover:bg-muted`}
                       onClick={() => {
                         onSelectProduct(account);
                         setFilteredData([]);
                         setGot(true);
                       }}
                     >
-                      <table className='w-full'>
+                      <table className={'w-full ' + (activeIndex === index ? 'bg-red-500' : '')}>
                         <thead>
                           <tr>
                             <th className='w-1/3 text-left pl-1 border'>Name</th>
@@ -122,9 +159,9 @@ const InvoiceAccountDetailModel = ({clearData,setClearData}) => {
                         </thead>
                         <tbody>
                           <tr className=''>
-                            <td className="p-2 text-left pl-1 border">{account.name}</td>
-                            <td className="py-2 text-left pl-1 border">{account.companyName}</td>
-                            <td className="py-2 text-left pl-1 border">{account.address}</td>
+                            <td className="p-[0.4px] text-left pl-1 border">{account.name}</td>
+                            <td className="py-[0.4px] text-left pl-1 border">{account.companyName}</td>
+                            <td className="py-[0.4px] text-left pl-1 border">{account.address}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -191,4 +228,4 @@ const InvoiceAccountDetailModel = ({clearData,setClearData}) => {
   );
 };
 
-export default InvoiceAccountDetailModel;
+export default PurchaseInvoiceAccountDetailModel;

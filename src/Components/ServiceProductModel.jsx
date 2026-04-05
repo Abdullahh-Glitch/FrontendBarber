@@ -91,6 +91,12 @@ const ServiceProductModel = () => {
     dispatch(openServiceModal());
   };
 
+  const clearForm = () => {
+    setSelectedProducts([]);
+    setName("");
+    setFilteredData([]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -254,6 +260,13 @@ const handleChange = (e) => {
               className="px-6 py-3 border border-border text-foreground rounded-xl hover:bg-secondary transition-all duration-200 font-medium cursor-pointer"
             >
               Back
+            </button>
+            <button
+              type="button"
+              onClick={clearForm}
+              className="px-6 py-3 border border-border text-foreground rounded-xl hover:bg-secondary transition-all duration-200 font-medium cursor-pointer"
+            >
+              Clear
             </button>
             <button
               type="submit"

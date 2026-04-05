@@ -25,8 +25,9 @@ const ProductModal = () => {
     address: "",
     mobileNo: "",
     phoneNo: "",
-    openingBalance: "0.00",
-    isActive: true,
+    openingBalance: "",
+    bType : "",
+    inActive: false,
   });
 
   const [errors, setErrors] = useState({});
@@ -41,8 +42,9 @@ const ProductModal = () => {
     address: "",
     mobileNo: "",
     phoneNo: "",
-    openingBalance: "0.00",
-    isActive: true,
+    openingBalance: "",
+    bType : "",
+    inActive: false,
     });
   };
 
@@ -56,8 +58,9 @@ const ProductModal = () => {
       address: account.address || "",
       mobileNo: account.mobileNo || "",
       phoneNo: account.phoneNo || "",
-      openingBalance: String(account.openingBalance) || "",
-      isActive: account.isActive ?? false,
+      openingBalance: String(account.openingBalance < 0 ? (account.openingBalance * -1) : account.openingBalance) || "",
+      bType: account.openingBalance > 0 ? "Dr" : "Cr",
+      inActive: account.inActive || false,
       });
     }
   }, [account]);
@@ -68,21 +71,18 @@ const ProductModal = () => {
     if (!validateForm(formData,setErrors)) return;
 
     console.log("validation passed");
+    console.log(formData);
     
 
     if (!isEdit) {
       saveAccount(formData, {
-        onSuccess: () => {
-          clearForm();
-        },
+        onSuccess: () => onClose(),
         onError: (error) => {
           console.log("SERVER ERROR:", error.response?.data);
         },
       });
     }
     if (isEdit) {
-      console.log(id);
-      
         editAccount({ accountId: id, account: formData },{
           onSuccess : ()=> onClose(),
           onError: (error) => {console.log("SERVER ERROR:", error.response?.data);}
@@ -141,7 +141,7 @@ const ProductModal = () => {
                     ? "border-destructive focus:ring-destructive/20"
                     : "border-border focus:ring-primary/20"
                 } focus:outline-none focus:ring-2 focus:border-primary`}
-                placeholder="Enter Product Name"
+                placeholder="Enter Account Name"
               />
               {errors.name && (
                 <p className="text-destructive text-sm mt-1 text-red-700 font-bold">{errors.name}</p>
@@ -225,8 +225,9 @@ const ProductModal = () => {
           </div>
 
           {/* Mobile Number */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
+          <div className="w-[100%] flex gap-2 md:flex-row flex-col">
+
+            <div className="w-[100%] md:w-[50%]">
               <label className="block text-sm font-medium text-foreground mb-2">
                 Mobile Number *
               </label>
@@ -245,7 +246,7 @@ const ProductModal = () => {
             </div>
 
             {/* Phone Number */}
-            <div>
+            <div className="w-[100%] md:w-[50%]">
               <label className="block text-sm font-medium text-foreground mb-2">
                 Phone Number *
               </label>
@@ -262,9 +263,11 @@ const ProductModal = () => {
                 <p className="text-destructive text-sm mt-1 text-red-700 font-bold">{errors.phoneNo}</p>
               )}
             </div>
+            </div>
 
-            {/* Current Balance */}
-            <div>
+          <div className="flex gap-2 md:flex-row flex-col">
+            
+            <div className="w-full">
               <label className="block text-sm font-medium text-foreground mb-2">
                 Opening Balance *
               </label>
@@ -276,10 +279,10 @@ const ProductModal = () => {
                 onChange={(e) =>
                   handleChange("openingBalance", e.target.value)
                 }
-                className={`w-full px-3 py-2 border rounded-lg bg-background text-foreground ${
-                  errors.currentBalance ? "border-destructive" : "border-border"
-                } focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
+                className={`w-[70%] px-3 py-2 border rounded-lg bg-background text-right text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
               />
+              <label className="text-center"><input type="radio" name="bt" checked={formData.bType === "Cr"} onClick={() => handleChange("bType", "Cr")} className="ml-3" />Cr</label>
+              <label className="text-center"><input type="radio" name="bt" checked={formData.bType === "Dr"} onClick={() => handleChange("bType", "Dr")} className="ml-2" />Dr</label>
               {errors.openingBalance && (
                 <p className="text-destructive text-sm mt-1 text-red-700 font-bold">
                   {errors.openingBalance}
@@ -288,24 +291,21 @@ const ProductModal = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
-            {/* Is Active */}
             <div className="flex gap-3 pl-1 pb-3">
                 <label
                 htmlFor="isActive"
                 className="text-sm font-medium text-foreground cursor-pointer"
               >
-                Is Active
+                InActive
               </label>
               <input
-                id="isActive"
+                id="inActive"
                 type="checkbox"
                 className="w-4 h-4 cursor-pointer"
-                checked={!!formData.isActive}
-                onChange={(e) => handleChange("isActive", e.target.checked)}
+                checked={!!formData.inActive}
+                onChange={(e) => handleChange("inActive", e.target.checked)}
               />
             </div>
-          </div>
 
           {/* Action Buttons */}
           <div className="flex justify-end space-x-3 pt-6 border-t border-border">
@@ -314,8 +314,17 @@ const ProductModal = () => {
               onClick={onClose}
               className="px-6 py-3 border border-border text-foreground rounded-xl hover:bg-secondary transition-all duration-200 font-medium cursor-pointer"
             >
-              Cancel
+              Close
             </button>
+
+            <button
+              type="button"
+              onClick={clearForm}
+              className="px-6 py-3 border border-border text-foreground rounded-xl hover:bg-secondary transition-all duration-200 font-medium cursor-pointer"
+            >
+              Clear
+            </button>
+
             <button
               type="submit"
               disabled={isSavePending || isEditPending}
@@ -326,8 +335,8 @@ const ProductModal = () => {
                 : isEditPending
                 ? "Updating..."
                 : isEdit
-                ? "Update Product"
-                : "Add Product"}
+                ? "Update Account"
+                : "Add Account"}
             </button>
           </div>
         </form>

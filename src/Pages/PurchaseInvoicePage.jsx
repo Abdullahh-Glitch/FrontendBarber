@@ -1,6 +1,6 @@
-import { useState, useMemo, useEffect } from 'react';
-import SupplierDetails from '../Components/InvoiceAccountDetailModel';
-import ItemDetails from '../Components/InvoiceProductTableModel';
+import { useState, useMemo, useEffect, useRef } from 'react';
+import SupplierDetails from '../Components/PurchaseInvoiceAccountDetailModel';
+import ItemDetails from '../Components/PurchaseInvoiceProductTableModel';
 import { GetProductForSearch } from '../Hooks/useProducts';
 // import { handleSavePurchaseInvoice } from '../Handlers/invoiceHandler';
 import { useSelector } from 'react-redux';
@@ -8,7 +8,7 @@ import { CreateInvoice } from "../Hooks/useInvoice";
 
 function PurchaseInvoicePage() {
 
-  const { mutateAsync: createInvoice } = CreateInvoice();
+  const { mutateAsync: createInvoice, isPending: isCreatingInvoice } = CreateInvoice();
   
   const [items, setItems] = useState([]);
   const [paidAmount, setPaidAmount] = useState(0);
@@ -21,6 +21,9 @@ function PurchaseInvoicePage() {
   const [name, setName] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [got, setGot] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
+
+  const itemRefs = useRef([]);
 
   const { data: gotData } = GetProductForSearch(name);
 
@@ -38,6 +41,15 @@ function PurchaseInvoicePage() {
       return;
     }
   }
+
+  useEffect(() => {
+  if (activeIndex >= 0) {
+    itemRefs.current[activeIndex]?.scrollIntoView({
+      behavior: "auto",
+      block: "nearest",
+    });
+  }
+}, [activeIndex]);
 
   const onSelectProduct = (product) => {
     if (!product) return;
@@ -116,6 +128,7 @@ function PurchaseInvoicePage() {
     const productData = items.map((item) => (item.productId && (item.boxes > 0 || item.pieces > 0) && item.price > 0 ? {
       sr : items.indexOf(item) + 1,
       productId : item.productId,
+      productName : item.name,
       pieces : Number(item.pieces).toFixed(2),
       boxes : Number(item.boxes).toFixed(2),
       totalPieces : Number(item.totalPieces).toFixed(2),
@@ -129,16 +142,40 @@ function PurchaseInvoicePage() {
   
     
   createInvoice({invoiceData : invoiceData, productData : productData}, {
-        onSuccess: () => {
+        onSuccess: (data) => {
             clearForm();
+            console.log(data);
+            // window.open(`http://localhost:5000${data.pdfUrl}`);
             console.log("Invoice Created");
-            
         },
         onError: (error) => {
           console.log("SERVER ERROR:", error.response?.data);
         },
       });
-  }
+  };
+
+  const handleKeyDownSearch = (e) => {
+      
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActiveIndex((prev) =>
+        prev < filteredData.length - 1 ? prev + 1 : 0
+      );
+    }
+
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActiveIndex((prev) =>
+        prev > 0 ? prev - 1 : filteredData.length - 1
+      );
+    }
+
+    if (e.key === "Enter" && activeIndex >= 0) {
+      e.preventDefault();
+      onSelectProduct(filteredData[activeIndex]);
+      setActiveIndex(-1);
+    }
+  };
 
   return (
     <div className="md:h-[90vh] w-[100%] h-screen bg-slate-300 px-3 md:px-6 lg:px-8 font-sans overflow-x-auto mx-auto thin-scrollbar">
@@ -152,9 +189,6 @@ function PurchaseInvoicePage() {
               <span className="bg-blue-600 p-2 rounded-lg">📄</span>
               Purchase Invoice
             </h1>
-            <p className="text-slate-400 mt-1 text-[10px] md:text-base">
-              Create and manage your purchase orders
-            </p>
           </div>
 
           <div className="flex gap-2 w-full md:w-auto">
@@ -209,6 +243,7 @@ function PurchaseInvoicePage() {
               type="text"
               value={name}
               onChange={(e) => onSearchProduct(e)}
+              onKeyDown={handleKeyDownSearch}
               className="w-[100%] h-[40px] px-4 py-3 pr-10 border rounded-xl bg-card text-foreground focus:outline-none focus:ring-2"
               placeholder="Enter Product Name"
             />
@@ -229,15 +264,16 @@ function PurchaseInvoicePage() {
             {name.trim() &&
               (filteredData.length > 0 ? (
                 <ul className="absolute z-50 w-[100%] mt-2 border rounded-xl shadow-lg max-h-60 bg-gradient-to-r from-[var(--from-color)] to-[var(--to-color)] text-[var(--text-color)] thin-scrollbar overflow-y-auto">
-                  {filteredData.map((product) => (
+                  {filteredData.map((product,index) => (
                     <li
                       key={product.id}
-                      className="px-4 py-2 cursor-pointer hover:bg-muted"
+                      className={`px-4 py-2 cursor-pointer hover:bg-muted ${activeIndex === index ? 'bg-blue-500 text-white' : ''}`}
                       onClick={() => {
                         onSelectProduct(product);
                         setFilteredData([]);
                         setGot(true);
                       }}
+                      ref={(el) => (itemRefs.current[index] = el)}
                     >
                       {product.name}
                     </li>
@@ -332,8 +368,10 @@ function PurchaseInvoicePage() {
                 className="w-full mt-8 bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-bold shadow-lg shadow-blue-200 transition-all flex justify-center items-center gap-2 active:scale-95"
                 // onClick={() => window.print()}
                 onClick={() => handleSave()}
+                disabled={isCreatingInvoice}
               >
-                💾 Save & Download Invoice
+                {isCreatingInvoice ? <span className="animate-pulse">Saving...</span> : "💾 Save & Download Invoice"} 
+                {/* {!isCreatingInvoice && } */}
               </button>
 
             </div>

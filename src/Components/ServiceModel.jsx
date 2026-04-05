@@ -8,7 +8,8 @@ import { validateForm } from "../Handlers/serviceHandler";
 const ServiceModel = () => {
   const dispatch = useDispatch();
 
- 
+  const [errors, setErrors] = useState({});
+  const [id, setId] = useState(0);
 
   const service = useSelector((state) => state.services.newService);
   const isEdit = useSelector((state)=> state.services.edit);
@@ -22,13 +23,22 @@ const ServiceModel = () => {
     description:"",
     price:0,
     durationMinutes: 0,
-    isActive: true,
+    inActive: false,
   });
 
-   const { refetch: checkServiceName, isFetching: checkingName } = CheckServiceName(formData.name);
+  const { refetch: checkServiceName, isFetching: checkingName } = CheckServiceName(formData.name);
 
-  const [errors, setErrors] = useState({});
-  const [id, setId] = useState(0);
+   const clearForm = () => {
+    setFormData({
+        name: "",
+        description:"",
+        price:0,
+        durationMinutes: 0,
+        inActive: false,
+    });
+    setId(0);
+    setErrors({});
+  }
 
   useEffect(() => {
     if (service) {
@@ -38,7 +48,7 @@ const ServiceModel = () => {
         description: service.description || "",
         price: service.price || 0,
         durationMinutes: service.durationMinutes || 0,
-        isActive: service.isActive ?? true,
+        inActive: service.inActive ?? false,
       });
     }
   }, [service]);
@@ -97,6 +107,7 @@ const ServiceModel = () => {
               <input
                 type="text"
                 value={formData.name}
+                focus={true}
                 onChange={(e) => handleChange("name", e.target.value)}
                 className={`w-full px-4 py-3 border rounded-xl bg-card text-foreground transition-all duration-200 ${
                   errors.name
@@ -175,15 +186,15 @@ const ServiceModel = () => {
           {/* Is Active Toggle */}
           <div className="flex items-center gap-3">
             <label className="text-sm font-medium text-foreground">
-              is Active
+              InActive
             </label>
 
             <label className="relative inline-flex items-center cursor-pointer w-14 h-7">
               <input
                 type="checkbox"
-                checked={formData.isActive} // ensure boolean
+                checked={formData.inActive} // ensure boolean
                 onChange={(e) =>
-                  handleChange("isActive", e.target.checked)
+                  handleChange("inActive", e.target.checked)
                 }
                 className="sr-only peer"
               />
@@ -194,10 +205,10 @@ const ServiceModel = () => {
               {/* Circle */}
               <div
                 className={`absolute top-0.5 left-0.5 w-6 h-6 bg-slate-600 rounded-full shadow-md transition-transform duration-200
-                ${formData.isActive ? "translate-x-7" : "translate-x-0"} 
+                ${formData.inActive ? "translate-x-7" : "translate-x-0"} 
                 flex items-center justify-center text-xs font-semibold`}
               >
-                {formData.isActive ? "Yes" : "No"}
+                {formData.inActive ? "Yes" : "No"}
               </div>
             </label>
           </div>
@@ -209,7 +220,14 @@ const ServiceModel = () => {
               onClick={onClose}
               className="px-6 py-3 border border-border text-foreground rounded-xl hover:bg-secondary transition-all duration-200 hover:scale-105 font-medium cursor-pointer"
             >
-              Cancel
+              Close
+            </button>
+            <button
+              type="button"
+              onClick={clearForm}
+              className="px-6 py-3 border border-border text-foreground rounded-xl hover:bg-secondary transition-all duration-200 hover:scale-105 font-medium cursor-pointer"
+            >
+              Clear
             </button>
             <button
               type="submit"
@@ -218,8 +236,8 @@ const ServiceModel = () => {
               {checkingName ? 
                 "Validating.."
                 : isEdit
-                ? "Edit Products"
-                : "Add Products"}
+                ? "Edit Products for Service"
+                : "Add Products for Service"}
             </button>
           </div>
         </form>

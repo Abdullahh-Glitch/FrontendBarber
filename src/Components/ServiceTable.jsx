@@ -8,9 +8,6 @@ import Loader from "./Loader";
 const ServiceTable = ({serviceData, serviceIsLoading, serviceIsError}) => {
   const dispatch = useDispatch();
 
-  
-  
-
   const onEdit = (product)=>{
     dispatch(openServiceModelEidt(product));
   }
@@ -56,23 +53,20 @@ const ServiceTable = ({serviceData, serviceIsLoading, serviceIsError}) => {
         <table className="w-full border border-border rounded-2xl">
           <thead className="bg-[var(--table--header)] sticky top-0 z-10">
             <tr >
-              <th className="px-6 py-3 w-[5%] text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
+              <th className="px-2 py-3 w-[1.5%] text-center text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Sr
               </th>
-              <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
+              <th className="px-3 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Name
               </th>
-              <th className="px-6 py-3 w-[20%] text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
+              <th className="px-3 py-3 w-[20%] text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Price
               </th>
-              <th className="px-6 py-3 w-[15%] text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
+              <th className="px-3 py-3 w-[15%] text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 durationMinutes
               </th>
-              <th className="px-6 py-3 w-[15%] text-center text-xs font-bold text-muted-foreground uppercase tracking-wider">
+              <th className="px-3 py-3 w-[15%] text-center text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Total Products Used
-              </th>
-              <th className="px-6 py-3 w-[10%] text-center text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                is Active
               </th>
               <th className="pr-10 py-3 w-[15%] text-right text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Actions
@@ -81,28 +75,23 @@ const ServiceTable = ({serviceData, serviceIsLoading, serviceIsError}) => {
           </thead>
           <tbody className="w-full h-full divide-y divide-border border border-border">
             {serviceData?.map((service, index) => (
-              <tr key={service.id} className={`hover:bg-[var(--row--hover)] transition-colors border border-[var(--border-color)] border-border  duration-100 ${index % 2 === 0 ? 'bg-[var(--row--e)]' : 'bg-[var(--row--o)]'} h-[15px]`}>
-                <td className="px-4 py-4 whitespace-nowrap border-r border-border border-[var(--border-color)]">
-                  <div>
-                    <div className="text-sm pl-4 font-medium text-foreground">{index +1}</div>
-                  </div>
+              <tr key={service.id} className={`hover:bg-[var(--row--hover)] transition-colors border border-[var(--border-color)] border-border  duration-100 ${index % 2 === 0 ? 'bg-[var(--row--e)]' : 'bg-[var(--row--o)]'} h-[4px]`}>
+                <td className="px-0.5 whitespace-nowrap border-r border-border border-[var(--border-color)]">
+                    <div className="text-[13px] text-center">{index +1}</div>
                 </td>
-                <td className="px-6 py-1 whitespace-nowrap border-r border-border border-[var(--border-color)]">
+                <td className="px-3 border-r border-border border-[var(--border-color)]">
                   {service.name}
                 </td>
-                <td className="px-6 py-1 whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm text-foreground">
+                <td className="px-3 border-r border-border border-[var(--border-color)]">
                   {service.price}
                 </td>
-                <td className="px-6 py-1 whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm font-mono text-foreground text-left">
+                <td className="px-3 border-r border-border border-[var(--border-color)] text-sm font-mono text-foreground text-left">
                   {service.durationMinutes} Minutes
                 </td>
-                <td className="px-6 py-1 whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm text-foreground text-center">
+                <td className="px-3 border-r border-border border-[var(--border-color)] text-sm text-foreground text-center">
                   {service.prdNo}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm font-mono text-foreground text-center">
-                  {service.isActive ? "True" : "False"}
-                </td>
-                <td className="px-6 py-1 whitespace-nowrap border-r border-[var(--border-color)] border-border text-right text-sm font-medium">
+                <td className="px-3 border-r border-[var(--border-color)] border-border text-right text-sm font-medium">
                   <div className="flex items-center justify-end space-x-2">
                     <button
                       onClick={() => onEdit(service)}

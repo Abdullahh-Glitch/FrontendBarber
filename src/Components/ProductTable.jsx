@@ -53,13 +53,13 @@ const ProductTable = ({ products, categories, isLoading }) => {
         <table className="w-full border border-border">
           <thead className="bg-[var(--table--header)] sticky top-0 z-10">
             <tr >
-              <th className="py-3 w-[2%] text-center text-xs font-bold text-muted-foreground uppercase tracking-wider">
+              <th className="w-[1.5%] text-center text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Sr
               </th>
               <th className="px-3 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Name
               </th>
-              <th className="px-3 py-3 w-[19%] text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
+              <th className="px-3 py-3 w-[19%] text-left md:text-left text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Category
               </th>
               <th className="py-3 w-[8%] text-center text-xs font-bold text-muted-foreground uppercase tracking-wider">
@@ -71,9 +71,6 @@ const ProductTable = ({ products, categories, isLoading }) => {
               <th className="py-3 w-[10%] text-center text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Uses Per Unit
               </th>
-              <th className="px-3 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                Current Stock
-              </th>
               <th className="pr-10 py-3 text-right text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Actions
               </th>
@@ -81,38 +78,30 @@ const ProductTable = ({ products, categories, isLoading }) => {
           </thead>
           <tbody className="divide-y divide-border border border-border">
             {products.map((product, index) => (
-              <tr key={index} className={`hover:bg-[var(--row--hover)] transition-colors border border-[var(--border-color)] border-border  duration-100 ${index % 2 === 0 ? 'bg-[var(--row--e)]' : 'bg-[var(--row--o)]'} h-[5px]`}>
+              <tr key={index} className={`hover:bg-[var(--row--hover)] transition-colors border border-[var(--border-color)] border-border  duration-100 ${index % 2 === 0 ? 'bg-[var(--row--e)]' : 'bg-[var(--row--o)]'} h-[4px]`}>
                 <td className="px-3 py-1 whitespace-nowrap border-r border-border border-[var(--border-color)]">
                   <div>
-                    <div className="text-sm pl-4 font-medium text-foreground">{index +1}</div>
+                    <div className="text-center w-[1%] text-[12px] text-foreground">{index +1}</div>
                   </div>
                 </td>
-                <td className="px-3 py-1 whitespace-nowrap border-r border-border border-[var(--border-color)]">
+                <td className="px-3 border-r text-[17px] font-bold border-border border-[var(--border-color)]">
                   {product.name}
                 </td>
-                <td className="px-3 py-1 whitespace-nowrap border-r border-border border-[var(--border-color)]">
+                <td className="px-2 border-r border-border text-center md:text-left text-[14px] border-[var(--border-color)]">
                   <span className="inline-flex items-center px-3 py-1 rounded-lg text-xs font-medium bg-primary/10 text-primary border border-primary/20">
                   {getCategoryName(product.categoryId)}
                   </span>
                 </td>
-                <td className="px-3 py-1 text-center whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm text-foreground">
+                <td className="px-3 border-r border-border border-[var(--border-color)] text-sm text-center text-foreground">
                   {product.unit}
                 </td>
-                <td className="py-1 whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm font-bold text-foreground text-center">
+                <td className="border-r border-border border-[var(--border-color)] text-sm font-bold text-foreground text-center">
                   {product.isServiceProduct ? "True" : "False"}
                 </td>
-                <td className="py-1 whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm text-foreground text-center">
+                <td className="border-r border-border border-[var(--border-color)] text-sm text-foreground text-center">
                   {product.usesPerUnit}
                 </td>
-                <td className={`px-3 py-1 whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm font-mono `}>
-                  <div className="text-sm text-foreground">
-                    Current: <span className="font-medium">{product.currentStock}</span>
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    Min: {product.minStock}
-                  </div>
-                </td>
-                <td className="px-3 py-1 whitespace-nowrap border-r border-[var(--border-color)] border-border text-right text-sm font-medium">
+                <td className="px-3 border-r border-[var(--border-color)] border-border text-right text-sm font-medium">
                   <div className="flex items-center justify-end space-x-2">
                     <button
                     onClick={() => onOpeningStock(product.id)}

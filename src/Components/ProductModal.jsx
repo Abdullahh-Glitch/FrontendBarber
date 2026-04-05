@@ -85,9 +85,7 @@ const ProductModal = ({ categories }) => {
       console.log(formData);
       
       saveProduct({product : formData, stock : null, productId : null}, {
-        onSuccess: () => {
-          clearForm();
-        },
+        onSuccess: () => onClose(),
         onError: (error) => {
           console.log("SERVER ERROR:", error.response?.data);
         },
@@ -100,9 +98,7 @@ const ProductModal = ({ categories }) => {
       EditProducts(
         { product: formData, stock : null, productId: id },
         {
-          onSuccess: () => {
-            clearForm();
-          },
+          onSuccess: () => onClose(),
           onError: (error) => {
             console.log("SERVER ERROR:", error.response?.data);
           },
@@ -157,7 +153,7 @@ const ProductModal = ({ categories }) => {
           <div>
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
-                Name *
+                Name <b className="text-red-500">*</b>
               </label>
               <input
                 type="text"
@@ -178,7 +174,7 @@ const ProductModal = ({ categories }) => {
 
           <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
             <label className="block text-sm font-medium text-foreground ">
-              Category *
+              Category <b className="text-red-500">*</b>
             </label>
             <div className="flex gap-1">
               <select
@@ -221,7 +217,7 @@ const ProductModal = ({ categories }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
-                SKU *
+                SKU <b className="text-red-500">*</b>
               </label>
               <input
                 type="text"
@@ -239,7 +235,7 @@ const ProductModal = ({ categories }) => {
 
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
-                Unit *
+                Unit <b className="text-red-500">*</b>
               </label>
               <input
                 type="text"
@@ -260,7 +256,7 @@ const ProductModal = ({ categories }) => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
-                Uses Per Unit *
+                Uses Per Unit {formData.isServiceProduct && <b className = "text-red-500">*</b>}
               </label>
               <input
                 type="number"
@@ -283,7 +279,7 @@ const ProductModal = ({ categories }) => {
 
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
-                Minimum Stock *
+                Minimum Stock
               </label>
               <input
                 type="number"
@@ -379,7 +375,14 @@ const ProductModal = ({ categories }) => {
               onClick={onClose}
               className="px-6 py-3 border border-border text-foreground rounded-xl hover:bg-secondary transition-all duration-200 font-medium cursor-pointer"
             >
-              Cancel
+              Close
+            </button>
+            <button
+              type="button"
+              onClick={clearForm}
+              className="px-6 py-3 border border-border text-foreground rounded-xl hover:bg-secondary transition-all duration-200 font-medium cursor-pointer"
+            >
+              Clear
             </button>
             <button
               type="submit"

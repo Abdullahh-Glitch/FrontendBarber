@@ -65,7 +65,7 @@ const onCancel = () => {
   return (
     <div className="fixed w-full h-full bg-gradient-to-r from-[var(--from-color)] to-[var(--to-color)] flex flex-col items-center justify-center">
       <div className="h-[25%] w-full flex items-center justify-center">
-        <div className="w-[90%] h-[60%] bg-gradient-to-r from-[var(--secondary-from)] to-[var(--secondary-to)] border border-[var(--border-color)] rounded-[30px] flex flex-col justify-center shadow-[var(--shadow-color)] text-[var(--text-color)]">
+        <div className="w-[97%] h-[60%] bg-gradient-to-r from-[var(--secondary-from)] to-[var(--secondary-to)] border border-[var(--border-color)] rounded-[30px] flex flex-col justify-center shadow-[var(--shadow-color)] text-[var(--text-color)]">
           <h1 className="pl-10 text-2xl font-bold text-foreground">Services</h1>
           <p className="pl-10 text-muted-foreground">
             Manage your barber shop Services

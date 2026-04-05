@@ -44,7 +44,7 @@ const ProductTable = ({ accounts, isLoading }) => {
         <table className="w-full border border-border">
           <thead className="bg-[var(--table--header)] sticky top-0 z-10">
             <tr >
-              <th className="py-3 w-[2%] text-center text-xs font-bold text-muted-foreground uppercase tracking-wider">
+              <th className="py-1 w-[1.5%] text-center text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Sr
               </th>
               <th className="px-3 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
@@ -59,12 +59,6 @@ const ProductTable = ({ accounts, isLoading }) => {
               <th className="px-3 py-3 w-[15%] text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Phone No.
               </th>
-              <th className="px-2 py-3 w-[15%] text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                Opening Balance
-              </th>
-              <th className="py-3 w-[10%] text-center text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                Is Active
-              </th>
               <th className="pr-10 py-3 w-[10%] text-right text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Actions
               </th>
@@ -72,33 +66,27 @@ const ProductTable = ({ accounts, isLoading }) => {
           </thead>
           <tbody className="divide-y divide-border border border-border">
             {accounts.map((account, index) => (
-              <tr key={index} className={`hover:bg-[var(--row--hover)] transition-colors border border-[var(--border-color)] border-border  duration-100 ${index % 2 === 0 ? 'bg-[var(--row--e)]' : 'bg-[var(--row--o)]'} h-[5px]`}>
-                <td className="pr-4 py-1 text-center whitespace-nowrap border-r border-border border-[var(--border-color)]">
+              <tr key={index} className={`hover:bg-[var(--row--hover)] transition-colors border border-[var(--border-color)] border-border  duration-100 ${index % 2 === 0 ? 'bg-[var(--row--e)]' : 'bg-[var(--row--o)]'} h-[4px]`}>
+                <td className="px-1 text-center whitespace-nowrap border-r border-border border-[var(--border-color)]">
                   <div>
-                    <div className="text-sm pl-4 font-medium text-foreground">{index +1}</div>
+                    <div className="text-center font-[2px] text-foreground">{index +1}</div>
                   </div>
                 </td>
-                <td className="px-3 py-1 whitespace-nowrap border-r border-border border-[var(--border-color)]">
+                <td className="px-3 border-r font-bold border-border border-[var(--border-color)]">
                   {account.name}
                 </td>
-                <td className="px-3 py-1 text-center whitespace-nowrap border-r border-border border-[var(--border-color)]">
-                  <span className="inline-flex items-center px-3 py-1 rounded-lg text-xs font-medium bg-primary/10 text-primary border border-primary/20">
+                <td className="px-3 text-center border-r border-border border-[var(--border-color)]">
+                  <span className="inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-primary/10 text-primary border border-primary/20">
                   {account.categoryId === 2 ? "Supplier" : account.categoryId === 3 ? "Customer" : ""}
                   </span>
                 </td>
-                <td className="px-3 py-1 text-left whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm text-foreground">
+                <td className="px-3 text-left border-r border-border border-[var(--border-color)] text-sm text-foreground">
                   {account.mobileNo}
                 </td>
-                <td className="px-3 py-1 whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm text-foreground text-left">
+                <td className="px-3 border-r border-border border-[var(--border-color)] text-sm text-foreground text-left">
                   {account.phoneNo}
                 </td>
-                <td className="py-1 px-2 whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm text-foreground text-left font-bold">
-                  {Number(account.openingBalance).toFixed(2)}
-                </td>
-                <td className={`px-3 py-1 text-center whitespace-nowrap border-r border-border border-[var(--border-color)] text-sm font-mono ${account.isActive ? "font-bold" : ""}`}>
-                  {account.isActive ? "Active" : "Not Active"}
-                </td>
-                <td className="pr-7 py-1 whitespace-nowrap border-r border-[var(--border-color)] border-border text-right text-sm font-medium">
+                <td className="pr-7 border-r border-[var(--border-color)] border-border text-right text-sm font-medium">
                   <div className="flex items-center justify-end space-x-2">
                     <button
                       onClick={() => onEdit(account)}

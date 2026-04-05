@@ -1,6 +1,6 @@
 import React from 'react';
 
-const InvoiceProductTableModel = ({ items, onUpdate, onDelete }) => {
+const PurchaseInvoiceProductTableModel = ({ items, onUpdate, onDelete }) => {
 
   return (
     <div className="w-full text-[var(--text-color)] h-[98%] rounded-2xl shadow-lg">
@@ -108,4 +108,4 @@ const InvoiceProductTableModel = ({ items, onUpdate, onDelete }) => {
   );
 };
 
-export default InvoiceProductTableModel;
+export default PurchaseInvoiceProductTableModel;
