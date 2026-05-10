@@ -51,7 +51,7 @@ const ServiceTable = ({serviceData, serviceIsLoading, serviceIsError}) => {
     <div className="w-full h-[98%] rounded-2xl shadow-lg">
       <div className="overflow-auto thin-scrollbar bg-gradient-to-r from-[var(--table--from)] to-[var(--table--to)] rounded-b-2xl h-full">
         <table className="w-full border border-border rounded-2xl">
-          <thead className="bg-[var(--table--header)] sticky top-0 z-10">
+          <thead className="bg-gradient-to-b from-[var(--table--header--from)] to-[var(--table--header--to)] sticky top-0 z-10">
             <tr >
               <th className="px-2 py-3 w-[1.5%] text-center text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Sr
@@ -75,7 +75,7 @@ const ServiceTable = ({serviceData, serviceIsLoading, serviceIsError}) => {
           </thead>
           <tbody className="w-full h-full divide-y divide-border border border-border">
             {serviceData?.map((service, index) => (
-              <tr key={service.id} className={`hover:bg-[var(--row--hover)] transition-colors border border-[var(--border-color)] border-border  duration-100 ${index % 2 === 0 ? 'bg-[var(--row--e)]' : 'bg-[var(--row--o)]'} h-[4px]`}>
+              <tr key={service.id} className={`hover:bg-[var(--row--hover)] transition-colors border border-[var(--border-color)] border-border  duration-100 ${index % 2 === 0 ? 'bg-gradient-to-l from-[var(--row--e--from)] to-[var(--row--e--to)]' : 'bg-gradient-to-b from-[var(--row--o--from)] to-[var(--row--o--to)]'} h-[4px]`}>
                 <td className="px-0.5 whitespace-nowrap border-r border-border border-[var(--border-color)]">
                     <div className="text-[13px] text-center">{index +1}</div>
                 </td>

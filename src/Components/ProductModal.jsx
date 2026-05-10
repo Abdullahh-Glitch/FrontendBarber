@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { X, Plus, Package, Edit } from "lucide-react";
 import { PostProducts, UpdateProducts } from "../Hooks/useProducts";
 import { useSelector, useDispatch } from "react-redux";
-import { closeProductModal, openProductCategoryModal, openOpeningProductStockModel } from "../Features/productSlice";
+import { closeProductModal, openProductCategoryModal } from "../Features/productSlice";
 import CategoryModel from "../Components/CategoryModal";
 import { validateForm } from "../Handlers/productHandler";
 
@@ -17,11 +17,6 @@ const ProductModal = ({ categories }) => {
   
   const handleOpenCategoryModal = () => {
     dispatch(openProductCategoryModal());
-  };
-
-  const handleAddOpeningStock = () => {
-    if (!validateForm(formData, setErrors)) return;
-    dispatch(openOpeningProductStockModel({product : formData}));
   };
 
   const onClose = () => {
@@ -84,7 +79,7 @@ const ProductModal = ({ categories }) => {
     if (!isEdit) {
       console.log(formData);
       
-      saveProduct({product : formData, stock : null, productId : null}, {
+      saveProduct({product : formData}, {
         onSuccess: () => onClose(),
         onError: (error) => {
           console.log("SERVER ERROR:", error.response?.data);
@@ -95,8 +90,7 @@ const ProductModal = ({ categories }) => {
     if (isEdit) {
       console.log(id, formData);
       
-      EditProducts(
-        { product: formData, stock : null, productId: id },
+      EditProducts({ productId: id, product: formData },
         {
           onSuccess: () => onClose(),
           onError: (error) => {
@@ -253,7 +247,7 @@ const ProductModal = ({ categories }) => {
           </div>
 
           {/* Stock Information */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className={`grid grid-cols-1 md:grid-cols-3 gap-4 ${isEdit ? "" : "md:flex md:flex-row md:justify-between"}`}>
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
                 Uses Per Unit {formData.isServiceProduct && <b className = "text-red-500">*</b>}
@@ -298,22 +292,6 @@ const ProductModal = ({ categories }) => {
                 </p>
               )}
             </div>
-
-            {/* Add Opening Stock Button */}
-            {!isEdit && (
-              <div>
-                <button
-                  type="button"
-                  onClick={handleAddOpeningStock}
-                  className="w-full px-2 mt-6.5 py-2 border-2 border-border bg-[#262626] text-[#d4d4d4] text-foreground rounded-xl hover:border-primary hover:bg-[#475569] transition-all duration-200 font-medium cursor-pointer flex items-center justify-center gap-2 group"
-                >
-                  <Package className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-                  <span className="group-hover:text-primary transition-colors">
-                    Add Opening Stock
-                  </span>
-                </button>
-              </div>
-            )}
 
             {isEdit && (<div className="flex items-center justify-center h-full">
               <div>

@@ -24,6 +24,16 @@ export const CheckName = async (name) => {
   }
 }
 
+export const getServiceForSearch = async (name) => {
+  const response = await axiosInstance.get(`/api/services/s/s/${name}`);
+  return response.data;
+}
+
+export const getServiceForDisplay = async () => {
+  const response = await axiosInstance.get("/api/services/s/sfd");
+  return response.data;
+};
+
 export const postService = async (data)=>{
   const {service,products} = data;
   const response = await axiosInstance.post("/api/services/s",{service,products});

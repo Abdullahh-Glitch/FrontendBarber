@@ -10,6 +10,16 @@ export const getSuppliersByName = async (name)=>{
   return response.data;
 }
 
+export const getCustomersByName = async (name)=>{
+  const response = await axiosInstance.get(`api/accounts/a/cn/${name}`);
+  return response.data;
+}
+
+export const getCustomersByPhone = async (phone)=>{
+  const response = await axiosInstance.get(`api/accounts/a/cp/${phone}`);
+  return response.data;
+}
+
 export const createAccount = async (account) => {
   const response = await axiosInstance.post("/api/accounts/a", account);
   return response.data;

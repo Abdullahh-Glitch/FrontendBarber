@@ -1,5 +1,5 @@
 import { useMutation, useQuery,useQueryClient } from '@tanstack/react-query';
-import { getProducts,getProductForSearch,getProductCategories, postProducts, updateProducts,postProductCategory, deleteProduct } from '../Apis/productApi';
+import { getProducts,getProductForSearch,getProductCategories, getProductForDisplay, postProducts, updateProducts,postProductCategory, deleteProduct } from '../Apis/productApi';
 
 export const GetProducts = ()=>{
     return useQuery({
@@ -21,6 +21,14 @@ export const GetProductForSearch = (name)=>{
         queryKey : ['products/p/s',name],
         queryFn : ()=>getProductForSearch(name),
         enabled : !!name
+    })
+}
+
+export const GetProductsForDisplay = ()=>{
+    return useQuery({
+        queryKey : ['products/p/pfd'],
+        queryFn : getProductForDisplay,
+        staleTime : 1000 * 60 * 5
     })
 }
 

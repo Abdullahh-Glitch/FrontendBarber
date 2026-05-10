@@ -1,25 +1,31 @@
 :root{
-    --from-color: #C9D6FF;
-    --to-color:  #E2E2E2;
+    --from-color: #1c92d2;
+    --to-color:  #f2fcfe;
 
-    --secondary-from: #6a85b6;
-    --secondary-to: #bac8e0;
+    --secondary-from: #00416A;
+    --secondary-to: #E4E5E6;
 
-    /* --secondary-from: #74ebd5;
-    --secondary-to: #9face6; */
+    --tag--from: #076585;
+    --tag--to: #fff;
 
-    /* --main--from: #fdfcfb;
-    --main--to: #e2d1c3; */
+    --itemCard--from: #abbaab;
+    --itemCard--to: #ffffff;
 
     --main--from: #6a85b6;
     --main--to: #bac8e0;
 
     --table--from: #082f49;
     --table--to: #082f49;
-    --table--header: #b0bec5;
-    --row--e: #e2d1c3;
-    --row--o: #fdfcfb;
+    --table--header--from: #E4E5E6;
+    --table--header--to: #00416A;
+    --row--e--from: #DAE2F8;
+    --row--e--to: #D6A4A4;
+    --row--o--from: #fdfcfb;
+    --row--o--to: #e2d1c3;
     --row--hover: #6f86d6;
+
+    --saleItem--from: #E0EAFC;
+    --saleItem--to: #CFDEF3;
 
     --text-color: black;
     --shadow-color: 0 10px 10px 2px rgba(0,0,0,0.5);
@@ -27,26 +33,38 @@
 }
 
 .dark{
-    --from-color: #334155;
-    --to-color: #0f172a;
+    --from-color: #002E5D;
+    --to-color: #002E5D;
 
 
-    --secondary-from:#475569;
-    --secondary-to:#1e293b;
+    --secondary-from:#2c3e50;
+    --secondary-to:#3498db;
+
+    --tag--from: #16222A;
+    --tag--to: #3A6073;
+
+    --itemCard--from: #536976;
+    --itemCard--to: #292E49;
 
     --main--from: #475569;
     --main--to: #1e293b;
 
     --table--from: #082f49;
     --table--to: #082f49;
-    --table--header: #075985;
-    --row--e: #082f49;
-    --row--o: #1e1b4b;
+    --table--header--from: #BBD2C5;
+    --table--header--to: #536976;
+    --row--e--from: #1F1C2C;
+    --row--e--to: #928DAB;
+    --row--o--from: #403B4A;
+    --row--o--to: #3A6073;
     --row--hover: #6f86d6;
+
+    --saleItem--from: #bdc3c7;
+    --saleItem--to: #2c3e50;
     
     
     --text-color: white;
     --shadow-color: 0 10px 10px 2px rgba(0,0,0,0.7);
-    --border-color: #821104;
+    --border-color: #403B4A;
     --border-radius: 8px;
 }

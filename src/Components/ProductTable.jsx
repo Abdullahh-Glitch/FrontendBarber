@@ -51,7 +51,7 @@ const ProductTable = ({ products, categories, isLoading }) => {
     <div className="w-full h-[98%] rounded-2xl shadow-lg">
       <div className="overflow-auto thin-scrollbar bg-gradient-to-r from-[var(--table--from)] to-[var(--table--to)] rounded-t-2xl h-full">
         <table className="w-full border border-border">
-          <thead className="bg-[var(--table--header)] sticky top-0 z-10">
+          <thead className="bg-gradient-to-b from-[var(--table--header--from)] to-[var(--table--header--to)] sticky top-0 z-10">
             <tr >
               <th className="w-[1.5%] text-center text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Sr
@@ -59,7 +59,7 @@ const ProductTable = ({ products, categories, isLoading }) => {
               <th className="px-3 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Name
               </th>
-              <th className="px-3 py-3 w-[19%] text-left md:text-left text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
+              <th className="px-3 py-3 w-[19%] text-left md:text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Category
               </th>
               <th className="py-3 w-[8%] text-center text-xs font-bold text-muted-foreground uppercase tracking-wider">
@@ -78,7 +78,7 @@ const ProductTable = ({ products, categories, isLoading }) => {
           </thead>
           <tbody className="divide-y divide-border border border-border">
             {products.map((product, index) => (
-              <tr key={index} className={`hover:bg-[var(--row--hover)] transition-colors border border-[var(--border-color)] border-border  duration-100 ${index % 2 === 0 ? 'bg-[var(--row--e)]' : 'bg-[var(--row--o)]'} h-[4px]`}>
+              <tr key={index} className={`hover:bg-[var(--row--hover)] transition-colors border border-[var(--border-color)] border-border  duration-100 ${index % 2 === 0 ? 'bg-gradient-to-l from-[var(--row--e--from)] to-[var(--row--e--to)]' : 'bg-gradient-to-b from-[var(--row--o--from)] to-[var(--row--o--to)]'} h-[4px]`}>
                 <td className="px-3 py-1 whitespace-nowrap border-r border-border border-[var(--border-color)]">
                   <div>
                     <div className="text-center w-[1%] text-[12px] text-foreground">{index +1}</div>

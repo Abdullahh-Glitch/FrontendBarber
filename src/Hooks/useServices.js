@@ -1,5 +1,5 @@
 import { useMutation, useQuery,useQueryClient } from '@tanstack/react-query';
-import{ getService, getServiceForTable, CheckName, postService, updateService, deleteService, getServiceProductsByServiceId, updateServiceandProducts } from '../Apis/serviceApi';
+import{ getService, getServiceForTable, CheckName, getServiceForSearch, getServiceForDisplay, postService, updateService, deleteService, getServiceProductsByServiceId, updateServiceandProducts } from '../Apis/serviceApi';
 
 export const GetServices = ()=>{
     return useQuery({
@@ -25,6 +25,22 @@ export const CheckServiceName = (name) => {
     retry: false,
   });
 };
+
+export const GetServiceForSearch = (name)=>{
+    return useQuery({
+        queryKey : ['services/s/s',name],
+        queryFn : ()=>getServiceForSearch(name),
+        enabled : !!name
+    })
+}
+
+export const GetServicesForDisplay = ()=>{
+    return useQuery({
+        queryKey : ['service/s/sfd'],
+        queryFn : getServiceForDisplay,
+        staleTime : 1000 * 60 * 5
+    })
+}
 
 export const  PostServices = ()=>{
     const queryClient = useQueryClient();

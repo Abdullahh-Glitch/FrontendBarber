@@ -14,11 +14,15 @@ export const getProductForSearch = async (name) => {
   const response = await axiosInstance.get(`/api/products/p/s/${name}`);
   return response.data;
 }
+export const getProductForDisplay = async () => {
+  const response = await axiosInstance.get(`/api/products/p/pfd`);
+  return response.data;
+}
 
 export const postProducts = async (data)=>{
-  const {product,stock,productId} = data;
+  const {product} = data;
 
-  const response = await axiosInstance.post("/api/products/p", {product : product, stock : stock, productId : productId});
+  const response = await axiosInstance.post("/api/products/p", {product : product});
   return response.data;
 }
 
