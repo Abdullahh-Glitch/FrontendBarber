@@ -7,6 +7,7 @@ import ServicesPage from "../Pages/ServicesPage";
 import AccountsPage from "../Pages/AccountsPage";
 import PurchaseInvoicePage from "../Pages/PurchaseInvoicePage";
 import SalesInvoicePage from "../Pages/SalesInvoicePage";
+import BankAccountsPage from "../Pages/BankAccountsPage";
 
 export default function ManagerLayout() {
 
@@ -18,6 +19,7 @@ export default function ManagerLayout() {
         <Routes>
           <Route path="" element={<ManagerHomePage />} />
           <Route path="accounts" element={<AccountsPage />} />
+          <Route path="bank-accounts" element={<BankAccountsPage />} />
           <Route path="products" element={<ProductPage />} />
           <Route path="services" element={<ServicesPage />} />
           <Route path="purchase" element={<PurchaseInvoicePage />} />

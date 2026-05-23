@@ -1,8 +1,11 @@
   import {useState, useEffect, useRef} from 'react'
   import { GetCustomersByName, GetCustomersByPhone } from '../Hooks/useAccounts';
+  import { useDispatch } from "react-redux";
+  import { setSelectedCustomerId, setSelectedEmployeeId, removeAccountId } from '../Features/invoiceSlice';
 
   export default function SalesInvoiceAccountDetailModel({side}) {
 
+    const dispatch = useDispatch();
     const [customerName, setCustomerName] = useState("");
     const [customerPhone, setCustomerPhone] = useState("");
     const [employeeName, setEmployeeName] = useState("");
@@ -36,6 +39,12 @@
       });
     }
   }, [activeIndex]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(removeAccountId());
+    }
+  }, [dispatch]);
 
     const onSearchCustomer = (e) => {
     setCustomerName(e.target.value);
@@ -71,6 +80,7 @@
       if (!account) return;
       setCustomerName(account.name);
       setCustomerPhone(account.phoneNo || account.mobileNo || "");
+      dispatch(setSelectedCustomerId(account.id));
       setFilteredData([]);
       setGot(true);
     }
@@ -78,6 +88,7 @@
       const onSelectEmployee = (account) => {
       if (!account) return;
       setEmployeeName(account.name);
+      dispatch(setSelectedEmployeeId(account.id));
       setFilteredData([]);
       setGot(true);
     }

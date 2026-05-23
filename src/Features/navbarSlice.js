@@ -5,6 +5,7 @@ const initialState = {
     { name: "Home", page: "/manager" },
     { name: "Accounts", page: "/manager/accounts" },
     { name: "Products", page: "/manager/products" },
+    { name: "Bank Accounts", page: "/manager/bank-accounts" },
     { name: "Services", page: "/manager/services" },
     { name: "Purchase Invoice", page: "/manager/purchase", categoryId : 1 },
     { name: "Sales Invoice", page: "/manager/sales", },

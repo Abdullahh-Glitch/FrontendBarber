@@ -81,7 +81,7 @@ const onCancel = () => {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <input
                 type="text"
-                placeholder="Search Service by name..."
+                placeholder="Search Account by name..."
                 value={searchTerm}
                 onChange={handdleSearch}
                 className="w-[100%] pl-10 py-3 h-[40px] md:h-[45px] border border-border rounded-xl bg-card text-foreground placeholder-muted-foreground placeholder-[var(--text-color)] focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary shadow-sm transition-all duration-200"
